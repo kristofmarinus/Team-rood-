@@ -1,0 +1,44 @@
+klant: 
+bedrijf of persoon, naam, email, telefoon, website
+
+
+menuutje kan handig zijn... 
+
+verwachte output: bij een project (of je kan meerdere projecten hebben)
+
+project is gelinked aan een klant
+
+elke taak is gelinked aan een project
+
+(kan je mss in lijst tonen... moet beetje intuitief zijn)
+
+project eigenschappen: naam, omschrijving einddatum (+ link aan klant)
+
+klantenlijst moet je kunnen ophalen
+
+je moet een klant kunnen selecteren, en dan laten zien: die klant heeft die projecten
+
+gebruikers: naam en email (dit zijn de teamleden.... )
+gebruiker moet je kunnen wissen, klant moet je kunnen wissen, klant moet je kunnen wissen, taak moet je kunnen wissen
+
+
+Bij gebruiker moet je de taken kunnen zien
+
+bij taak moet je kunnen zien bij welke gebruiker
+
+taak eigenschappen: naam, beschrijving, startdatum, deadline, wie doet het. Zijn we al gestart: ja/nee. eventueel procent klaar. is taak voltooid
+je kan een taak aanmaken, zonder daar al een gebruiker aan toe te voegen
+
+lijstje openstaande taken kunnen genereren
+
+lijstje voltooide taken kunnen genereren
+
+(per project?)
+
+oppassen: als je een klant wist, ook de projecten en de taken die daaraan hangen
+
+tip kristof: eindig met wissen... doe eerst de rest... 
+
+optie voor tussendoor al eens op te slaan... 
+
+afgeven: een week of twee na de kerstvakantie
