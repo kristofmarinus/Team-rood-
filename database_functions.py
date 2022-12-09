@@ -71,3 +71,19 @@ def number_of_records(tablename):
 def number_of_columns(tablename):
     record = show_table(tablename)
     return len(record)
+
+    
+def delete_record():
+    try:
+        query = 'select * from ' + tablename + ' where pk_task_id =' + str(id) + ";"
+        count = db.cursor.execute(query)
+
+        pass
+
+    except Exception as e:
+        print('delete_record error: {} '.format(e))
+    pass
+
+def delete_field():
+    pass
+
