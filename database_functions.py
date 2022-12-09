@@ -45,6 +45,6 @@ def show_field(tablename, id, fieldname):
         if len(result) == 0:
             print('lege tabel!')
         else:
-            print('output {}'.format(result))
+            return result[0][0]
     except sqlite3.Error as error:
         print('Error occured - ', error)
