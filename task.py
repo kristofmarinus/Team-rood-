@@ -7,11 +7,11 @@ class Task():
     #it might be interesting to set a trigger in the database to keep track off when a task changes
     _id = None   # this might have to be deleted... for adding a new Task maybe we should let the SQLite autoincrement do its thing instead 
 
-    _FK_projectID = 0  # maybe 0 is a bad option here.. 
-    _FK_userId = 0  #maybe this needs to be an instance variable.. not every task has a user assigned to it
+    _FK_projectID = None  # maybe 0 is a bad option here.. 
+    _FK_userId = None  #maybe this needs to be an instance variable.. not every task has a user assigned to it
     _date_added = None #look at this again later... datetime.datetime.now() in setter looks like best options
     _deadline = None #look at this again later.. not every task needs a deadline
-    _description = ''
+    _description = None
     _date_finished = None #look at this again later... not every task needs this
     _date_started = None #the date a task is started
     #_date_changed = None  #do we need to keep track of this? trigger in database seems like best option

@@ -4,7 +4,7 @@ cursor = None
 sqliteConnection = None
 
 import sqlite3
-from list_task import show_all_tasks
+
 
 def make_connection():
     global sqliteConnection
