@@ -1,11 +1,12 @@
 import datetime
+import database_functions as dbf
 
 class Task():
     #initializing the variables
     #note: maybe we should make these instance variables instead of  class variables
     #also: how are we gonna handle None (Null) values? 
     #it might be interesting to set a trigger in the database to keep track off when a task changes
-    _id = None   # this might have to be deleted... for adding a new Task maybe we should let the SQLite autoincrement do its thing instead 
+    _id = 'aap'  # this might have to be deleted... for adding a new Task maybe we should let the SQLite autoincrement do its thing instead 
 
     _FK_projectID = None  # maybe 0 is a bad option here.. 
     _FK_userId = None  #maybe this needs to be an instance variable.. not every task has a user assigned to it
@@ -20,20 +21,40 @@ class Task():
     #note: date will be difficult... 
     @property
     def id(self):
-        self._id = id
+        return self._id
     
     @id.setter
     def id(self, value):
-        #add validation.... 
-        self._id = value
+        if not isinstance(value, int):
+            raise TypeError('id moet een integer zijn')
+        elif value >0: 
+            self._id = value
+        else: 
+            raise ValueError('id moet positief zijn')
+
+    @property
+    def description(self):
+        return self._description
+
+    @description.setter
+    def description(self, value):
+        if value is not None:
+            self._description = value
+
 
     #... getters and setters for the other attributes
 
+
+
     @property
-    def fromSQL(self, value):
+    def fromSQL(self):
         """sets  the variables of an instance to the values from the database
         """
-        pass
+        try: 
+            self.description = dbf.show_field('tasks', 1, 'task_started_on')
+
+        except Exception as e:
+            print(e)
         #query to get the date from SQL
         #assing the variables to those values... 
 
@@ -41,6 +62,9 @@ class Task():
     #note: if we define the pointer in main, how does that inherit? 
     def to_SQL(self):
         pass
+
+    def __str__(self):
+        return self.description
 
  
 
