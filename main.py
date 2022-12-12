@@ -5,7 +5,7 @@ from task import Task
 
 
 def main():
-    
+    #dbf.delete_record(tasks, 4)
 
 
 if __name__ == '__main__':

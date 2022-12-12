@@ -73,16 +73,20 @@ def number_of_columns(tablename):
     return len(record)
 
     
-def delete_record():
+def delete_record(tablename,id):
     try:
         query = 'select * from ' + tablename + ' where pk_task_id =' + str(id) + ";"
         count = db.cursor.execute(query)
-
-        pass
+        result = db.cursor.fetchall()
+    
+        if len(result) == 0:
+            print('lege tabel!')
+        else:
+            return result[0][0]
 
     except Exception as e:
         print('delete_record error: {} '.format(e))
-    pass
+
 
 def delete_field():
     pass
