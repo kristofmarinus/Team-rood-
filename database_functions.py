@@ -64,9 +64,7 @@ def show_field(tablename, id, fieldname):
         print('Error occured - ', error)
 
 
-<<<<<<< HEAD
-def delete_record(tablename, id):
-=======
+
 def number_of_records(tablename):
     list_records = show_table(tablename)
     return len(list_records)
@@ -76,8 +74,7 @@ def number_of_columns(tablename):
     return len(record)
 
     
-def delete_record():
->>>>>>> 2ad9921dd0641eb21c4596fc5a1b6d07ed8a38ba
+def delete_record(tablename, id):
     try:
         query = 'delete from ' + tablename + ' where id =' + str(id) +";"
         count = db.cursor.execute(query)
