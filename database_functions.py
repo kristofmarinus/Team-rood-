@@ -28,7 +28,7 @@ def show_record(tablename, id, Fancyprint = False):
     try:
         # Write a query and execute it with cursor
         # Fetch and output resul
-        query = 'select * from ' + tablename + ' where pk_task_id =' + str(id) +";"
+        query = 'select * from ' + tablename + ' id =' + str(id) +";"
         count = db.cursor.execute(query)
         result = db.cursor.fetchall()
     
@@ -52,7 +52,7 @@ def show_field(tablename, id, fieldname):
     try:
         # Write a query and execute it with cursor
         # Fetch and output resul
-        query = 'select ' + fieldname + ' from ' + tablename + ' where pk_task_id =' + str(id) +";"
+        query = 'select ' + fieldname + ' from ' + tablename + ' where id =' + str(id) +";"
         count = db.cursor.execute(query)
         result = db.cursor.fetchall()
     
@@ -86,7 +86,7 @@ def delete_record(tablename, id):
 
 def delete_fieldname(tablename, id, fieldname):
     try:
-        query = 'delete ' + fieldname + ' from ' + tablename + ' where pk_task_id =' + str(id) +";"
+        query = 'delete ' + fieldname + ' from ' + tablename + ' where id =' + str(id) +";"
         count = db.cursor.execute(query)
         result = db.cursor.commit()
     
