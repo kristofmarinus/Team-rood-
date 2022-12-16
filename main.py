@@ -12,12 +12,16 @@ def main():
     #print(dbf.give_record('tasks', 1, True))
     #dbf.show_record('tasks', 1)
     #print(dbf.show_field('tasks', 4, 'task_descr'))
-    print(dbf.give_table('tasks', True))
+    #print(dbf.give_table('tasks', True))
     #print(len(dbf.give_table('tasks')))
     #print(len(dbf.give_table('tasks')[0]))
     #print(dbf.get_justify_values(dbf.give_table('tasks'), 'tasks'))
     #print(dbf.give_column_names('tasks'))
-    
+    #print(dbf.give_field('tasks', 1, 'task_descr'))
+    new_task = Task()
+    print(type(new_task))
+    new_task.from_sql = 2
+    print(new_task.__dict__)
 
 if __name__ == '__main__':
     main()

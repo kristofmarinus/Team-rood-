@@ -5,7 +5,6 @@ import databaseconnection as db
 import sqlite3
 
 def give_table(tablename, fancy_print = False):
-    #nog toe te voegen: tabelnamen... 
     try:
         # Write a query and execute it with cursor
         # Fetch and output resul
@@ -202,7 +201,7 @@ def get_column_names(tablename:str)->list:
     Returns:
         list: list containing the names of the columns (string)
     """
-    table = db.cursor.execute('select * from tasks')
+    table = db.cursor.execute(f'select * from {tablename}')
     description = table.description
     list_names = []
     for element in description:
