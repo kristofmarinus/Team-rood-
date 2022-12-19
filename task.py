@@ -1,11 +1,15 @@
 import datetime
 import database_functions as dbf
+import sqlite3
+import databaseconnection as db
+from baseclass import BaseClass
 
-class Task():
+class Task(BaseClass):
     #initializing the variables
     #note: maybe we should make these instance variables instead of  class variables
     #also: how are we gonna handle None (Null) values? 
     #it might be interesting to set a trigger in the database to keep track off when a task changes
+    _tablename = 'tasks'
     _id = 'aap'  # this might have to be deleted... for adding a new Task maybe we should let the SQLite autoincrement do its thing instead 
 
     _fk_project_id = None  # maybe 0 is a bad option here.. 
@@ -100,7 +104,7 @@ class Task():
 
 
     @property
-    def from_sql(self):
+    def from_db(self):
         """sets  the variables of an instance to the values from the database
         """
         try: 
@@ -113,8 +117,8 @@ class Task():
 
     #function: to write TO SQL
     #note: if we define the pointer in main, how does that inherit? 
-    @from_sql.setter
-    def from_sql(self, id:int):
+    @from_db.setter
+    def from_db(self, id:int):
         try: 
             self.id = dbf.give_field('tasks', id, 'id')
             self.task_descr = dbf.give_field('tasks', id, 'task_descr')
@@ -129,17 +133,22 @@ class Task():
         except Exception as e:
             print(f'error in module from_sql : {e}')
 
-    def to_SQL(self):
-        pass
+    def to_db(self):
+        #nog uitbreiden: als self.id Null is: nieuwe record wegschrijven. als self.id niet Null is: bestaande record updaten
+        #als we een nieuwe task aanmaken moeten we die GEEN id geven. Dat doet de database zelf bij het wegschrijven...
+        try:
+            query = f'insert into {self._tablename} (task_descr, fk_user_id, fk_project_id) values ("{self.task_descr}" , {self.fk_user_id} , {self.fk_project_id});'
+            count = db.cursor.execute(query)
+            db.sqliteConnection.commit()  
+        except sqlite3.Error as error:
+            print('Error occured - ', error)
 
     def __str__(self):
-        return self.description
-
- 
+        return self.__dict__()
 
 
-#function to ADD a task
-#should be two functions: get input + make task 
+
+
 
 #funtion to CHANGE a task (like assign user)
 #should be two functions: get input + change task 

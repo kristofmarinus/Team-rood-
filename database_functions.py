@@ -4,7 +4,14 @@
 import databaseconnection as db
 import sqlite3
 
-def give_table(tablename, fancy_print = False):
+def give_table(tablename:str)->list:
+    """returns a table from database
+
+    Args:
+        tablename (_type_): tablenames as string. for example 'tasks'
+    Returns:
+        _list_: list containing the table. every record is a tuple in that list. 
+    """
     try:
         # Write a query and execute it with cursor
         # Fetch and output resul
@@ -16,51 +23,88 @@ def give_table(tablename, fancy_print = False):
     
     if len(result) == 0:
         print('lege tabel!')
-    if not fancy_print: 
-        return result
-    elif fancy_print:
-        print_string = give_string_columnames(tablename) + "\n"        
-        number_records = number_of_records(tablename)
-        for record_index in range(1,number_records):  #dit moet worden aangepast nog.. range moet een lijst van indexen worden (want index kan ontbreken)
-            print_string += give_record(tablename, record_index, True, True) + "\n"
-        return print_string
+    return result
+    
             
 
-def give_record(tablename, id, Fancyprint = False, multiple_records = False):
+def give_record(tablename:str, id:int)->list:
+    """returns a a record (line in a table)
 
+    Args:
+        tablename (_str_): string containing tablename. For example "tasks"
+        id (_int_): ID of the record
+
+    Returns:
+        list: list containing a tuple holding the values in the record
+    """
     try:
         # Write a query and execute it with cursor
         # Fetch and output resul
         query = 'select * from ' + tablename + ' where id = ' + str(id) +";"
         count = db.cursor.execute(query)
         result = db.cursor.fetchall()
-    
         if len(result) == 0:
             print('lege tabel!')
-        else:
-            if not Fancyprint: 
-                return result
-            elif Fancyprint:
-                list_justify = get_justify_values(tablename)
-
-                number_colums = number_of_columns(tablename)
-                string_columnames = give_string_columnames(tablename)
-                string_record = ''
-                for index in range(number_colums):
-                    string_record += '| ' + str(result[0][index]).strip().ljust(list_justify[index]) 
-                if multiple_records == False: 
-                    return string_columnames + "\n" + string_record + '| '
-                if multiple_records == True: 
-                    return string_record + '| '      
+        return result                            
     except sqlite3.Error as error:
         print('Error occured - ', error)
 
 
-def give_string_columnames(tablename:str)->str:
-    """returns a string of columnames, used in fancyprint
+def print_record(tablename:str, result:list, list_justify = [], no_columnames = False):
+    """prints a single record (given as parameter: "result")
+    when called by the function "print_table" the list_justify has to be given by the print_table function 
+    and no_columnnames set to True.
+    print_record does not GET the record. use "give_record" for that and feed it as parameter "result"
+
+    Args:
+        tablename (str): string containing the tablename. for example "tasks"
+        result (): the result of the query. A list containing a single tuple holding the values in the record
+        list_justify (list, optional): list of justication values. Defaults to []. only enter this when printing multiple records (like a table)
+        no_columnames (bool, optional): set this to True when printing multiple records (like a table). Defaults to False.
+    """
+    if len(list_justify) == 0:
+        list_justify = get_justify_values(tablename, result)
+    number_colums = number_of_columns(tablename)
+
+    if no_columnames == False: 
+        #get and print the columnames:
+        string_record = give_string_columnames(tablename, list_justify)
+        print(string_record)
+    #iterete over the list "result" and compile the string that gets printed: 
+    string_record = ''
+    for index in range(number_colums):
+        string_record += '| ' + str(result[0][index]).strip().ljust(list_justify[index]) 
+    #print the string: 
+    print(string_record + '| ')
+
+
+def print_table(tablename:str, result:list):
+    """prints a table. Or part of a table (for example the result of a query)
+    print_table does not GET the table from the database. Use in combination with get_table() and feed that value into the function as "result"
+
+    Args:
+        tablename (str): string containing the tablename. for example "tasks"
+        result (list): hold the table (or result of a query0). A list containing tuples. Every tuple holds the values of a record (line) 
+    """
+    if len(result) == 0:
+        print('lege tabel!')
+    list_justify = get_justify_values(tablename, result)
+    number_colums = number_of_columns(tablename)
+   #print columnames:   
+    print(give_string_columnames(tablename, list_justify))    
+    #iterate over the table and print every record:  
+    number_records = len(result)
+    for record_index in range(number_records):  
+        print_record(tablename, [result[record_index]], list_justify, True) 
+
+      
+  
+def give_string_columnames(tablename:str, list_justify:list)->str:
+    """returns a string of columnames, used in print_table() and print_record()
 
     Args:
         tablename (_str_): name of the table
+        list_justify(_list_): list containing the justify values for printing
 
     Returns:
         _str_: formatted string of the columnames
@@ -69,7 +113,7 @@ def give_string_columnames(tablename:str)->str:
         query = 'select * from ' + tablename + ";"
         count = db.cursor.execute(query)
         result = db.cursor.fetchall()
-        list_justify = get_justify_values(tablename)
+        #list_justify = get_justify_values(tablename)
         number_colums = number_of_columns(tablename)
         list_column_names = get_column_names(tablename)
         string_columnames = ''
@@ -126,6 +170,14 @@ def number_of_records(tablename:str)->int:
 
 
 def number_of_columns(tablename:str)->int:
+    """returns the number of columns in a table
+
+    Args:
+        tablename (str): string of the tablename. for example "tasks"
+
+    Returns:
+        int: number of columns
+    """
     record = give_table(tablename)
     return len(record[0])
 
@@ -154,17 +206,17 @@ def delete_fieldname(tablename, id, fieldname):
         print('Error occured - ', error)
 
 
-def get_justify_values(tablename:str)->list:
+def get_justify_values(tablename:str, table)->list:
     """return the justify values used for "fancyprint"
 
     Args:
         tablename (_str_): name of table
+        
 
     Returns:
         list: list of the justify values for every column (integer values)
     """
     extra_space = 1
-    table = give_table(tablename)
     number_columns = len(table[0])
     number_records = len(table)
     list_justify_values = []
@@ -188,7 +240,7 @@ def get_justify_values(tablename:str)->list:
     return list_justify_values
         
 
-def give_index_values(tablename:str)->list:
+def give_index_values(table:list)->list:
     pass #returns a list with the index values
 
 
