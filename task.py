@@ -10,7 +10,7 @@ class Task(BaseClass):
     #also: how are we gonna handle None (Null) values? 
     #it might be interesting to set a trigger in the database to keep track off when a task changes
     _tablename = 'tasks'
-    _id = 'aap'  # this might have to be deleted... for adding a new Task maybe we should let the SQLite autoincrement do its thing instead 
+    _id = None  # this might have to be deleted... for adding a new Task maybe we should let the SQLite autoincrement do its thing instead 
 
     _fk_project_id = None  # maybe 0 is a bad option here.. 
     _fk_user_id = None  #maybe this needs to be an instance variable.. not every task has a user assigned to it
@@ -25,7 +25,7 @@ class Task(BaseClass):
     #getters and setters for all the attributes... 
     #note: date will be difficult... 
     @property
-    def id(self):
+    def id(self)->int:
         return self._id
     
     @id.setter
@@ -38,13 +38,12 @@ class Task(BaseClass):
             raise ValueError('id moet positief zijn')
 
     @property
-    def task_descr(self):
+    def task_descr(self)->str:
         return self._task_descr
-
+  
     @task_descr.setter
     def task_descr(self, value):
-        if value is not None:
-            self._task_descr = value
+        self._task_descr = value
 
     @property
     def fk_project_id(self)->int:
@@ -52,7 +51,12 @@ class Task(BaseClass):
 
     @fk_project_id.setter
     def fk_project_id(self, value:int):
-        self._fk_project_id = value
+        if not isinstance(value, int):
+            raise TypeError('id moet een integer zijn')
+        elif value >0: 
+            self._fk_project_id = value
+        else: 
+            raise ValueError('id moet positief zijn')
 
     @property
     def fk_user_id(self)->int:
@@ -60,47 +64,111 @@ class Task(BaseClass):
 
     @fk_user_id.setter
     def fk_user_id(self, value):
-        self._fk_user_id = value
+        if not isinstance(value, int):
+            raise TypeError('id moet een integer zijn')
+        elif value >0: 
+            self._fk_user_id = value
+        else: 
+            raise ValueError('id moet positief zijn')
 
     @property
     def task_date_added(self):
-        return self._task_date_added
+        if isinstance(self._task_date_added, datetime.date):
+            return super().date_to_str(self._task_date_added)
+        elif self._task_date_added is None:
+            return None
+        else: 
+            raise TypeError('date paramater is in wrong type')
 
     @task_date_added.setter
     def task_date_added(self, value):
-        self._task_date_added = value
+        if isinstance(value, datetime.date):
+            self._task_date_added = value
+        elif isinstance(value, str):
+            self._task_date_added = super().str_to_date(value) 
+        elif value is None:
+            self._task_date_added = None
+        else:
+            raise TypeError('date is in wrong type')
 
     @property
     def task_deadline(self):
-        return self._task_deadline
+        if isinstance(self._task_deadline, datetime.date):
+            return super().date_to_str(self._task_deadline)
+        elif self._task_deadline is None:
+            return None
+        else: 
+            raise TypeError('date paramater is in wrong type')
 
     @task_deadline.setter
     def task_deadline(self, value):
-        self._task_deadline = value
+        if isinstance(value, datetime.date):
+            self._task_deadline = value
+        elif isinstance(value, str):
+            self._deadline = super().str_to_date(value) 
+        elif value is None:
+            self._task_deadline = None
+        else:
+            raise TypeError('date is in wrong type')
 
     @property
-    def task_progress(self):
+    def task_progress(self)->int:
+        """progress is an integer [0 - 100]"""
         return self._task_progress
 
     @task_progress.setter
     def task_progress(self, value):
-        self._task_progress = value
+        if isinstance(value, int):
+            if value >=0 and value <= 100:
+                self._task_progress = value
+            else: 
+                raise ValueError('progress has to be an integer [0-100]')
+        else: 
+            raise TypeError('progress has to be an integer [0-100]')
+        
     
     @property
     def task_started_on(self):
-        return self.task_started_on
+        if isinstance(self._task_started_on, datetime.date):
+            return super().date_to_str(self._task_started_on)
+        elif self._task_started_on is None:
+            return None
+        else: 
+            raise TypeError('date paramater is in wrong type')
+
+        
 
     @task_started_on.setter
     def task_started_on(self, value):
-        self._task_started_on = value
+        if isinstance(value, datetime.date):
+            self._task_started_on = value
+        elif isinstance(value, str):
+            self._task_started_on = super().str_to_date(value) 
+        elif value is None:
+            self._task_started_on = None
+        else:
+            raise TypeError('date is in wrong type')
 
     @property
     def task_finished_on(self):
-        return self.task_finished_on
+        if isinstance(self._task_finished_on, datetime.date):
+            return super().date_to_str(self._task_finished_on)
+        elif self._task_finished_on is None:
+            return None
+        else: 
+            raise TypeError('date paramater is in wrong type')
+
 
     @task_finished_on.setter
     def task_finished_on(self, value):
-        self._task_finished_on = value
+        if isinstance(value, datetime.date):
+            self._finished_on = value
+        elif isinstance(value, str):
+            self._task_finished_on = super().str_to_date(value) 
+        elif value is None:
+            self._task_finished_on = None
+        else:
+            raise TypeError('date is in wrong type')
 
 
     @property
@@ -137,7 +205,14 @@ class Task(BaseClass):
         #nog uitbreiden: als self.id Null is: nieuwe record wegschrijven. als self.id niet Null is: bestaande record updaten
         #als we een nieuwe task aanmaken moeten we die GEEN id geven. Dat doet de database zelf bij het wegschrijven...
         try:
-            query = f'insert into {self._tablename} (task_descr, fk_user_id, fk_project_id) values ("{self.task_descr}" , {self.fk_user_id} , {self.fk_project_id});'
+            query1 = f'insert into {self._tablename} '
+            #query2= f'(task_descr, fk_user_id, fk_project_id, task_date_added) '
+            query2= f'(task_descr, fk_user_id, fk_project_id, task_date_added, task_deadline, task_progress, task_started_on, task_finished_on) '
+            query3 = f'values '
+            #query4 = f'("{self.task_descr}" , {self.fk_user_id} , {self.fk_project_id}, {self.task_date_added});'.replace('None', 'Null')
+            query4 = f'("{self.task_descr}" , {self.fk_user_id} , {self.fk_project_id}, "{self.task_date_added}", "{self.task_deadline}", {self.task_progress},  "{self.task_started_on}", "{self.task_finished_on}");'.replace('"None"', 'Null').replace('None', 'Null')
+            query = query1 + query2 + query3 + query4
+            print(query)
             count = db.cursor.execute(query)
             db.sqliteConnection.commit()  
         except sqlite3.Error as error:
