@@ -1,4 +1,3 @@
-#import re
 import databaseconnection as dbf
 from inputs import get_input_item
 
