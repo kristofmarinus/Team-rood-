@@ -1,6 +1,6 @@
 import databaseconnection as db
 from inputs import get_input_item
-
+#Als
 
 class User():
     __firstname = ""
@@ -93,24 +93,26 @@ class User():
         """
         project_id = get_input_item("Enter 1 to show all users",
                                     1)
-        try:
-            if project_id == 1:
-                sql_cmd = 'select * from users;'
-            db.cursor.execute(sql_cmd)
-            rows = db.cursor.fetchall()
-            print('-' * 50)
-            print('user ID - fullname - firstname - lastname - email - website')
-            print('-' * 50)
-            if len(rows) > 0:
-                for row in rows:
-                    print('| ', end='')
-                    for i in row:
-                        print(i, end=' | ')
-                    print('')
-            else:
-                print('geen gegevens gevonden')
-        except Exception as e:
-            print(f'fout: {e}')
+        def show_users_2(project_id):
+            try:
+                if project_id == 1:
+                    sql_cmd = 'select * from users;'
+                db.cursor.execute(sql_cmd)
+                rows = db.cursor.fetchall()
+                print('-' * 50)
+                print('user ID - fullname - firstname - lastname - email - website')
+                print('-' * 50)
+                if len(rows) > 0:
+                    for row in rows:
+                        print('| ', end='')
+                        for i in row:
+                            print(i, end=' | ')
+                        print('')
+                else:
+                    print('geen gegevens gevonden')
+            except Exception as e:
+                print(f'fout: {e}')
+        show_users_2(project_id)
 
 
 def create_user() -> User:
@@ -177,7 +179,7 @@ def adjust_user(db):
         # Choose id of the user
         print('-' * 50)
 
-        user_id = int(input("Enter the id of the user: "))
+        user_id = int(input("Enter the id of the user: ")) #!!!!!! if toevoeggen als er een fout id werd gekozen !!!!!!!#
 
         # Do you want to adjust whole row or specific column
         adjust_type = int(input("\n1.whole row \n2.specific column \nWhat do you want to adjust: "))
@@ -196,15 +198,17 @@ def adjust_user(db):
             db.sqliteConnection.commit()
             print("User details updated successfully!")
         elif adjust_type == 2:
-            # Ask for the column to be adjusted
-            column = input("Enter the column name to be adjusted: ")
-            value = input("Enter the new value: ")
+            def adjust_column():
+                # Ask for the column to be adjusted
+                column = input("Enter the column name to be adjusted: ")
+                value = input("Enter the new value: ")
 
-            # Update the column in the database
-            c = db.cursor
-            c.execute("UPDATE users SET {}=? WHERE id=?".format(column), (value, user_id))
-            db.sqliteConnection.commit()
-            print("User details updated successfully!")
+                # Update the column in the database
+                c = db.cursor
+                c.execute("UPDATE users SET {}=? WHERE id=?".format(column), (value, user_id))
+                db.sqliteConnection.commit()
+                print("User details updated successfully!")
+            adjust_column()
 
 
 def adjust_user_run():
@@ -221,14 +225,19 @@ def adjust_user_run():
                   "\n2. choose another row/user  "
                   "\n3. exit"
                   "\nChoose: "))
-        if more == 1:
-            #Choose the column
-            continue
-        elif more == 2:
-            #Choose another user
+        if more == 1: #another column
+            #Choose the column ; DONE
+            adjust_column()
+        elif more == 2: #another row/user
+            #print users
+            User.show_users(project_id=-1)
+            #Choose the user
+                #ROW or COLUMN ?
+                    #if row -> adjust row
+                    #if column -> adjust columnt
             continue
         elif more == 3:
-            #exit
+            #exit to main menu
             break
 
 
