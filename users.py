@@ -1,59 +1,227 @@
-import datetime
-import database_functions as dbf
+#import re
+import databaseconnection as dbf
+from inputs import get_input_item
+
 
 class User():
+    __firstname = ""
+    __lastname = ""
+    __fullname = ""
+    __email = "none"
+    __website = "none"
 
-    _id = 'aap'
-    _user_name = None
-
-    @property
-    def id(self):
-        return self._id
-    
-    @id.setter
-    def id(self, value):
-        if not isinstance(value, int):
-            raise TypeError('id moet een integer zijn')
-        elif value >0: 
-            self._id = value
-        else: 
-            raise ValueError('id moet positief zijn')
+    def __init__(self, firstname: str, lastname: str):
+        self.__firstname = firstname
+        self.__lastname = lastname
 
     @property
-    def user_name(self):
-        return self._user_name
+    def firstname(self):
+        return self.__firstname
 
-    @user_name.setter
-    def user_name(self, value):
-        if value is not None:
-            self._user_name = value
+    @firstname.setter
+    def firstname(self, value):
+        self.__firstname = value
 
     @property
-    def from_sql(self):
-        """sets  the variables of an instance to the values from the database
+    def lastname(self):
+        return self.__lastname
+
+    @lastname.setter
+    def lastname(self, value):
+        self.__lastname = value
+
+    @property
+    def email(self):
+        return self.__email
+
+    @email.setter
+    def email(self, value: str):
+        if "." in value and "@" in value:
+            self.__email = value
+        else:
+            print("invalid email address")
+            self.__email = "n/a"
+
+    @property
+    def website(self):
+        return self.__website
+
+    @website.setter
+    def website(self, value: str):
+        if '.' in value:
+            self.__website = value
+        else:
+            print('invalid website')
+            self.__website = 'n/a'
+
+    @property
+    def fullname(self) -> str:
+        """generates the full name of the user, based on the first and last name
+
+        Returns:
+            str: the full name of the user
         """
-        try: 
-            pass
+        return self.__firstname + " " + self.__lastname
 
+    def write_user(self):
+        """writes user to the database
+        """
+        try:
+            sql_cmd = f"insert into users (fullname,first_name, last_name, email, website) values ('{self.fullname}','{self.firstname}', '{self.lastname}', '{self.email}', '{self.website}');"
+            dbf.cursor.execute(sql_cmd)
+            dbf.sqliteConnection.commit()
         except Exception as e:
-            print(e)
-        #query to get the date from SQL
-        #assing the variables to those values... 
+            print(f'fout def.write_user: {e}')
 
-    #function: to write TO SQL
-    #note: if we define the pointer in main, how does that inherit? 
-    @from_sql.setter
-    def from_sql(self, id:int):
-        try: 
-            self.id = dbf.give_field('users', id, 'id')
-            self.user_name = dbf.give_field('users', id, 'user_name')
-            
+    @staticmethod
+    def delete_user(inp: int):
+        """delete user from database
 
+        Args:
+            inp (int): id nr of user to be deleted
+        """
+        try:
+            sql_cmd = f'delete from users where id = {inp};'
+            dbf.cursor.execute(sql_cmd)
+            dbf.sqliteConnection.commit()
+            print('User deleted')
         except Exception as e:
-            print(f'error in module from_sql : {e}')
+            print(f'fout: {e}')
 
-    def to_SQL(self):
-        pass
+    @staticmethod
+    def show_users(project_id=-1):
+        """show all users
+        """
+        project_id = get_input_item("Enter 1 to show all users",
+                                    1)
+        try:
+            if project_id == 1:
+                sql_cmd = 'select * from users;'
+            dbf.cursor.execute(sql_cmd)
+            rows = dbf.cursor.fetchall()
+            print('-' * 50)
+            print('user ID - fullname - firstname - lastname - email - website')
+            print('-' * 50)
+            if len(rows) > 0:
+                for row in rows:
+                    print('| ', end='')
+                    for i in row:
+                        print(i, end=' | ')
+                    print('')
+            else:
+                print('geen gegevens gevonden')
+        except Exception as e:
+            print(f'fout: {e}')
 
-    def __str__(self):
-        return self.description
+
+def create_user() -> User:
+    """
+
+    Asks for information
+
+    Returns:
+        User: the user
+    """
+    firstname = get_input_item('Give first name')
+    lastname = get_input_item('Give last name')
+    email = get_input_item('Give email')
+    website = get_input_item('Give website')
+    user = User(firstname, lastname)
+    user.email = email
+    user.website = website
+    return user
+
+
+def add_user():
+    """
+    adds a user to the user list
+    """
+    user = create_user()
+    user.write_user()
+
+
+def delete_user():
+    """asks user which id to delete,
+
+    double check : yes/no
+
+    deletes the user
+    """
+    User.show_users()
+    inp = get_input_item("Select user id to delete", 1)
+    check = get_input_item(f'WARNING: Delete is irreparable --- enter "y" --- if you wish still to delete the user{inp}')
+    if check.strip().lower() == "y":
+        User.delete_user(inp)
+        print(f'USER with id:{inp} was DELETED')
+    else:
+        print('Deletion was UNDONE.')
+
+
+def adjust_user(dbf):
+        #Print all the info of the table users
+        sql_cmd = 'select * from users;'
+        dbf.cursor.execute(sql_cmd)
+        rows = dbf.cursor.fetchall()
+        print('-' * 50)
+        print('user ID - fullname - firstname - lastname - email - website')
+        print('-' * 50)
+        if len(rows) > 0:
+            for row in rows:
+                print('| ', end='')
+                for i in row:
+                    print(i, end=' | ')
+                print('')
+        else:
+            print('geen gegevens gevonden')
+
+        # Choose id of the user
+        print('-' * 50)
+
+        user_id = int(input("Enter the id of the user: "))
+
+        # Do you want to adjust whole row or specific column
+        adjust_type = int(input("\n1.whole row \n2.specific column \nWhat do you want to adjust: "))
+
+        if adjust_type == 1:
+            # Ask for all the details
+            fname = input("Enter the first name: ")
+            lname = input("Enter the last name: ")
+            email = input("Enter the email: ")
+            website = input("Enter the website: ")
+
+            # Update the row in the database
+            c = dbf.cursor()
+            c.execute("UPDATE users SET first_name=?, last_name=?, email=?, website=?, WHERE id=?",
+                      (fname, lname, email,website, user_id))
+            dbf.commit()
+            print("User details updated successfully!")
+        elif adjust_type == 2:
+            # Ask for the column to be adjusted
+            column = input("Enter the column name to be adjusted: ")
+            value = input("Enter the new value: ")
+
+            # Update the column in the database
+            c = dbf.cursor()
+            c.execute("UPDATE users SET {}=? WHERE id=?".format(column), (value, user_id))
+            dbf.commit()
+            print("User details updated successfully!")
+
+
+def adjust_user_run():
+    # Connect to the database
+
+    while True:
+        # Adjust user details
+        adjust_user(dbf)
+
+        # Ask if user wants to adjust more column or choose another row/user
+        more = int(
+            input("Do you want to 1. adjust more column of the user or 2. choose another row/user or 3. exit: "))
+        if more == 1:
+            continue
+        elif more == 2:
+            continue
+        elif more == 3:
+            break
+
+

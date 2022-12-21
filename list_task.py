@@ -1,4 +1,3 @@
-
 schemaname = 'rooddb.db'
 tablename = 'tasks'
 
