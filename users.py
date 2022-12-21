@@ -154,6 +154,7 @@ def delete_user():
         print(f'USER with id:{inp} was DELETED')
     else:
         print('Deletion was UNDONE.')
+    # UPDATE ALL TAASKS WHICH DELETED ID = USER ID
 
 
 def adjust_user(dbf):
