@@ -161,9 +161,14 @@ def adjust_user(db):
         #Print all the info of the table users
         sql_cmd = 'select * from users;'
 <<<<<<< HEAD
+<<<<<<< HEAD
         dbf.cursor.execute(sql_cmd)
         rows = dbf.cursor.fetchall()
 
+=======
+        db.cursor.execute(sql_cmd)
+        rows = db.cursor.fetchall()
+>>>>>>> fd93263d877000d5643372a3c4e57cba34194b2e
 =======
         db.cursor.execute(sql_cmd)
         rows = db.cursor.fetchall()

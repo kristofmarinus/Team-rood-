@@ -91,7 +91,11 @@ def print_table(tablename:str, result:list):
     list_justify = get_justify_values(tablename, result)
     number_colums = number_of_columns(tablename)
 <<<<<<< HEAD
+<<<<<<< HEAD
     #print columnames:   
+=======
+   #print columnames:   
+>>>>>>> fd93263d877000d5643372a3c4e57cba34194b2e
 =======
    #print columnames:   
 >>>>>>> fd93263d877000d5643372a3c4e57cba34194b2e
@@ -102,7 +106,11 @@ def print_table(tablename:str, result:list):
         print_record(tablename, [result[record_index]], list_justify, True) 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> fd93263d877000d5643372a3c4e57cba34194b2e
 =======
       
 >>>>>>> fd93263d877000d5643372a3c4e57cba34194b2e
@@ -272,7 +280,12 @@ def get_column_names(tablename:str)->list:
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 print(get_column_names('tasks'))
+=======
+
+
+>>>>>>> fd93263d877000d5643372a3c4e57cba34194b2e
 =======
 
 
