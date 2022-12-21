@@ -162,6 +162,7 @@ def adjust_user(dbf):
         sql_cmd = 'select * from users;'
         dbf.cursor.execute(sql_cmd)
         rows = dbf.cursor.fetchall()
+
         print('-' * 50)
         print('user ID - fullname - firstname - lastname - email - website')
         print('-' * 50)

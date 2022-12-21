@@ -1,5 +1,13 @@
-schemaname = '/Users/dastanmirzayev/PycharmProjects/pythonProject3/newone test/rooddb.db'
-#tablename = 'tasks'
+import os
+import platform
+print(type(platform.system()))
+if platform.system == "Darwin":
+    schemaname = '/Users/dastanmirzayev/Team-rood-/rooddb.db'
+else: 
+    schemaname = 'rooddb.db'
+
+
+
 cursor = None
 sqliteConnection = None
 import sqlite3

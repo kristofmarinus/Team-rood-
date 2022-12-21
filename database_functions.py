@@ -90,14 +90,14 @@ def print_table(tablename:str, result:list):
         print('lege tabel!')
     list_justify = get_justify_values(tablename, result)
     number_colums = number_of_columns(tablename)
-   #print columnames:   
+    #print columnames:   
     print(give_string_columnames(tablename, list_justify))    
     #iterate over the table and print every record:  
     number_records = len(result)
     for record_index in range(number_records):  
         print_record(tablename, [result[record_index]], list_justify, True) 
 
-      
+
   
 def give_string_columnames(tablename:str, list_justify:list)->str:
     """returns a string of columnames, used in print_table() and print_record()
@@ -263,6 +263,5 @@ def get_column_names(tablename:str)->list:
     
 
 
-
-
+print(get_column_names('tasks'))
 
