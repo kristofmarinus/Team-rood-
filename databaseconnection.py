@@ -1,4 +1,4 @@
-schemaname = '/Users/dastanmirzayev/PycharmProjects/pythonProject3/newone test/rooddb.db'
+schemaname = 'rooddb.db'
 #tablename = 'tasks'
 cursor = None
 sqliteConnection = None
