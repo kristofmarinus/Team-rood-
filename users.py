@@ -1,4 +1,4 @@
-import databaseconnection as dbf
+import databaseconnection as db
 from inputs import get_input_item
 
 
@@ -67,8 +67,8 @@ class User():
         """
         try:
             sql_cmd = f"insert into users (fullname,first_name, last_name, email, website) values ('{self.fullname}','{self.firstname}', '{self.lastname}', '{self.email}', '{self.website}');"
-            dbf.cursor.execute(sql_cmd)
-            dbf.sqliteConnection.commit()
+            db.cursor.execute(sql_cmd)
+            db.sqliteConnection.commit()
         except Exception as e:
             print(f'fout def.write_user: {e}')
 
@@ -81,8 +81,8 @@ class User():
         """
         try:
             sql_cmd = f'delete from users where id = {inp};'
-            dbf.cursor.execute(sql_cmd)
-            dbf.sqliteConnection.commit()
+            db.cursor.execute(sql_cmd)
+            db.sqliteConnection.commit()
             print('User deleted')
         except Exception as e:
             print(f'fout: {e}')
@@ -96,8 +96,8 @@ class User():
         try:
             if project_id == 1:
                 sql_cmd = 'select * from users;'
-            dbf.cursor.execute(sql_cmd)
-            rows = dbf.cursor.fetchall()
+            db.cursor.execute(sql_cmd)
+            rows = db.cursor.fetchall()
             print('-' * 50)
             print('user ID - fullname - firstname - lastname - email - website')
             print('-' * 50)
@@ -157,11 +157,11 @@ def delete_user():
     # UPDATE ALL TAASKS WHICH DELETED ID = USER ID
 
 
-def adjust_user(dbf):
+def adjust_user(db):
         #Print all the info of the table users
         sql_cmd = 'select * from users;'
-        dbf.cursor.execute(sql_cmd)
-        rows = dbf.cursor.fetchall()
+        db.cursor.execute(sql_cmd)
+        rows = db.cursor.fetchall()
         print('-' * 50)
         print('user ID - fullname - firstname - lastname - email - website')
         print('-' * 50)
@@ -190,10 +190,10 @@ def adjust_user(dbf):
             website = input("Enter the website: ")
 
             # Update the row in the database
-            c = dbf.cursor()
-            c.execute("UPDATE users SET first_name=?, last_name=?, email=?, website=?, WHERE id=?",
+            c = db.cursor
+            c.execute("UPDATE users SET firstname=?, lastname=?, email=?, website=?, WHERE id=?",
                       (fname, lname, email,website, user_id))
-            dbf.commit()
+            db.sqliteConnection.commit()
             print("User details updated successfully!")
         elif adjust_type == 2:
             # Ask for the column to be adjusted
@@ -201,9 +201,9 @@ def adjust_user(dbf):
             value = input("Enter the new value: ")
 
             # Update the column in the database
-            c = dbf.cursor()
+            c = db.cursor
             c.execute("UPDATE users SET {}=? WHERE id=?".format(column), (value, user_id))
-            dbf.commit()
+            db.sqliteConnection.commit()
             print("User details updated successfully!")
 
 
@@ -212,16 +212,23 @@ def adjust_user_run():
 
     while True:
         # Adjust user details
-        adjust_user(dbf)
+        adjust_user(db)
 
         # Ask if user wants to adjust more column or choose another row/user
         more = int(
-            input("Do you want to 1. adjust more column of the user or 2. choose another row/user or 3. exit: "))
+            input("Do you want to "
+                  "\n1. adjust more column of the user  "
+                  "\n2. choose another row/user  "
+                  "\n3. exit"
+                  "\nChoose: "))
         if more == 1:
+            #Choose the column
             continue
         elif more == 2:
+            #Choose another user
             continue
         elif more == 3:
+            #exit
             break
 
 
