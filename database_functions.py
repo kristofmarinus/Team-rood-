@@ -50,92 +50,8 @@ def give_record(tablename:str, id:int)->list:
         print('Error occured - ', error)
 
 
-def print_record(tablename:str, result:list, list_justify = [], no_columnames = False):
-    """prints a single record (given as parameter: "result")
-    when called by the function "print_table" the list_justify has to be given by the print_table function 
-    and no_columnnames set to True.
-    print_record does not GET the record. use "give_record" for that and feed it as parameter "result"
 
-    Args:
-        tablename (str): string containing the tablename. for example "tasks"
-        result (): the result of the query. A list containing a single tuple holding the values in the record
-        list_justify (list, optional): list of justication values. Defaults to []. only enter this when printing multiple records (like a table)
-        no_columnames (bool, optional): set this to True when printing multiple records (like a table). Defaults to False.
-    """
-    if len(list_justify) == 0:
-        list_justify = get_justify_values(tablename, result)
-    number_colums = number_of_columns(tablename)
-
-    if no_columnames == False: 
-        #get and print the columnames:
-        string_record = give_string_columnames(tablename, list_justify)
-        print(string_record)
-    #iterete over the list "result" and compile the string that gets printed: 
-    string_record = ''
-    for index in range(number_colums):
-        string_record += '| ' + str(result[0][index]).strip().ljust(list_justify[index]) 
-    #print the string: 
-    print(string_record + '| ')
-
-
-def print_table(tablename:str, result:list):
-    """prints a table. Or part of a table (for example the result of a query)
-    print_table does not GET the table from the database. Use in combination with get_table() and feed that value into the function as "result"
-
-    Args:
-        tablename (str): string containing the tablename. for example "tasks"
-        result (list): hold the table (or result of a query0). A list containing tuples. Every tuple holds the values of a record (line) 
-    """
-    if len(result) == 0:
-        print('lege tabel!')
-    list_justify = get_justify_values(tablename, result)
-    number_colums = number_of_columns(tablename)
-   #print columnames:   
-    print(give_string_columnames(tablename, list_justify))    
-    #iterate over the table and print every record:  
-    number_records = len(result)
-    for record_index in range(number_records):  
-        print_record(tablename, [result[record_index]], list_justify, True) 
-
-      
-  
-def give_string_columnames(tablename:str, list_justify:list)->str:
-    """returns a string of columnames, used in print_table() and print_record()
-
-    Args:
-        tablename (_str_): name of the table
-        list_justify(_list_): list containing the justify values for printing
-
-    Returns:
-        _str_: formatted string of the columnames
-    """
-    try: 
-        query = 'select * from ' + tablename + ";"
-        count = db.cursor.execute(query)
-        result = db.cursor.fetchall()
-        #list_justify = get_justify_values(tablename)
-        number_colums = number_of_columns(tablename)
-        list_column_names = get_column_names(tablename)
-        string_columnames = ''
-        for index in range(number_colums):
-            string_columnames += '| ' + str(list_column_names[index]).strip().ljust(list_justify[index]) 
-        return string_columnames + '| '
-    except sqlite3.Error as error:
-        print('Error occured - ', error)
-
-
-
-def give_field(tablename:str, id:int, fieldname:str):
-    """returns value of a field
-
-    Args:
-        tablename (str): name of table
-        id (int): id of record
-        fieldname (str): colunmname
-
-    Returns:
-        _type_: value in that field. type depends on value...
-    """
+def show_field(tablename, id, fieldname):
     try:
         # Write a query and execute it with cursor
         # Fetch and output resul
@@ -240,29 +156,6 @@ def get_justify_values(tablename:str, table)->list:
     return list_justify_values
         
 
-def give_index_values(table:list)->list:
-    pass #returns a list with the index values
-
-
-def get_column_names(tablename:str)->list:
-    """generates a list of the column names of a given table
-
-    Args:
-        tablename (_type_): name of the table
-
-    Returns:
-        list: list containing the names of the columns (string)
-    """
-    table = db.cursor.execute(f'select * from {tablename}')
-    description = table.description
-    list_names = []
-    for element in description:
-        list_names.append(str(element[0]))
-    return list_names
-
-    
-
-
-
-
+def delete_field():
+    pass
 

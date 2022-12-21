@@ -222,3 +222,4 @@ class Task(BaseClass):
 # funtion to CHANGE a task (like assign user)
 # should be two functions: get input + change task
 
+new_task = Task()

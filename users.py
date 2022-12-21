@@ -162,8 +162,8 @@ def delete_user():
 def adjust_user(db):
         #Print all the info of the table users
         sql_cmd = 'select * from users;'
-        db.cursor.execute(sql_cmd)
-        rows = db.cursor.fetchall()
+        dbf.cursor.execute(sql_cmd)
+        rows = dbf.cursor.fetchall()
         print('-' * 50)
         print('user ID - fullname - firstname - lastname - email - website')
         print('-' * 50)
