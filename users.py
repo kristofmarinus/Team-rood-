@@ -187,8 +187,6 @@ def adjust_user(db):
 
         # Choose id of the user
         user_id = cs50.get_int("Enter the id of the user: ")
-        def choose_user():
-            pass
 
         #cheking if the id of the user exists
         def id_exists(user_id):
@@ -245,15 +243,25 @@ def adjust_row(user_id):
 
 
 def adjust_column(user_id):
+    # Query the database to get a list of column names in the USERS table
+    c = db.cursor
+    c.execute("PRAGMA table_info(users)")
+    column_names = [column_info[1] for column_info in c.fetchall()]
+
     # Ask for the column to be adjusted
     column = input("Enter the column name to be adjusted: ")
-    value = input("Enter the new value: ")
+    while column not in column_names:
+        print("Invalid column name. Please try again.")
+        column = input("Enter the column name to be adjusted: ")
 
     # Update the column in the database
-    c = db.cursor
+    value = input("Enter the new value: ")
     c.execute("UPDATE users SET {}=? WHERE id=?".format(column), (value, user_id))
     db.sqliteConnection.commit()
     print("User details updated successfully!")
+
+
+
 
 
 #choose which want toch adjust row or column
@@ -273,6 +281,7 @@ def adjust_type_func(user_id):
             return adjust_type
 
         elif adjust_type == 2:
+
             print_selected_user(user_id)
             adjust_column(user_id)
             return adjust_type
@@ -317,8 +326,8 @@ def adjust_user_run():
     #put unknown id - fixed
 
 #test2 - Users - Adjust - ID of the user - specific column
-    #put a mistake in a name of the column -
-
+    #put a mistake in a name of the column - FIXED!!
+    #if the column != column in USERS then ask again for the column! -- FIXED!!
 
 #test3 - Users - Adjust - ID of the user - whole row
     # error on whole row adjustment - syntax error WHERE etc -FIXED!!!!
