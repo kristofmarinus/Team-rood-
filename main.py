@@ -1,7 +1,8 @@
-import databaseconnection as dbf  #database  is made in through dbf
+import databaseconnection as db  #database  is made in through db
 from task import Task
 import inputs
 import users
+
 
 
 # actions users:
@@ -98,7 +99,7 @@ def menu_user():
 
 if __name__ == "__main__":
     try:
-        dbf.make_connection()
+        db.make_connection()
         do_menu()
     except Exception as e:
         print(f'something went wrong: {e}')
