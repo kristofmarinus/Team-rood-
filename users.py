@@ -238,7 +238,7 @@ def adjust_row(user_id):
 
     # Update the row in the database
     c = db.cursor
-    c.execute("UPDATE users SET firstname=?, lastname=?, email=?, website=?, WHERE id=?",
+    c.execute("UPDATE users SET firstname=?, lastname=?, email=?, website=? WHERE id=?",
               (fname, lname, email, website, user_id))
     db.sqliteConnection.commit()
     print("User details updated successfully!")
@@ -279,7 +279,7 @@ def adjust_type_func(user_id):
 
         else:
             print('Choose a valid number!')
-            adjust_type_func()
+            adjust_type_func(user_id)
 
 def adjust_user_run():
     # Connect to the database
@@ -311,6 +311,7 @@ def adjust_user_run():
             break
 
 
+
 #test1 - Users - Adjust - ID of the user:
     #put letter - FIXED
     #put unknown id - fixed
@@ -318,12 +319,17 @@ def adjust_user_run():
 #test2 - Users - Adjust - ID of the user - specific column
     #put a mistake in a name of the column -
 
+
 #test3 - Users - Adjust - ID of the user - whole row
+    # error on whole row adjustment - syntax error WHERE etc -FIXED!!!!
 
 
-#test4 - Users - Adjust - ID of the user - specific column -
+
+
+
+#test4 - Users - Adjust - ID of the user - specific column - Adjust row/column of the same user
 
 
 #problem the full name does not updates after the chaning the firstname or lastname
-#error on whole row adjustment - syntax error WHERE etc
+
 #error cant fix: after making mistake of choosing the users to adjust, we choose specific column and PRINTING does not show the information about user.
