@@ -1,6 +1,7 @@
 import databaseconnection as db
 from inputs import get_input_item
-#Als
+from src import cs50
+
 
 class User():
     __firstname = ""
@@ -93,6 +94,7 @@ class User():
         """
         project_id = get_input_item("Enter 1 to show all users",
                                     1)
+        #Add a feature to show users from X-ids to Y-ids.
         def show_users_2(project_id):
             try:
                 if project_id == 1:
@@ -156,88 +158,203 @@ def delete_user():
         print(f'USER with id:{inp} was DELETED')
     else:
         print('Deletion was UNDONE.')
-    # UPDATE ALL TAASKS WHICH DELETED ID = USER ID
+    # UPDATE ALL TASKS WHICH DELETED ID = USER ID
 
 
 def adjust_user(db):
-        #Print all the info of the table users
-        sql_cmd = 'select * from users;'
-        dbf.cursor.execute(sql_cmd)
-        rows = dbf.cursor.fetchall()
-        print('-' * 50)
-        print('user ID - fullname - firstname - lastname - email - website')
-        print('-' * 50)
-        if len(rows) > 0:
-            for row in rows:
-                print('| ', end='')
-                for i in row:
-                    print(i, end=' | ')
-                print('')
-        else:
-            print('geen gegevens gevonden')
+
+        def print_all():
+            """
+            #Print all the info of the table users
+            :return: prints all the users
+            """
+            sql_cmd = 'select * from users;'
+            db.cursor.execute(sql_cmd)
+            rows = db.cursor.fetchall()
+            print('-' * 50)
+            print('user ID - fullname - firstname - lastname - email - website')
+            print('-' * 50)
+            if len(rows) > 0:
+                for row in rows:
+                    print('| ', end='')
+                    for i in row:
+                        print(i, end=' | ')
+                    print('')
+                print('-' * 50)
+            else:
+                print('geen gegevens gevonden')
+        print_all()
 
         # Choose id of the user
-        print('-' * 50)
+        user_id = cs50.get_int("Enter the id of the user: ")
 
-        user_id = int(input("Enter the id of the user: ")) #!!!!!! if toevoeggen als er een fout id werd gekozen !!!!!!!#
+        #cheking if the id of the user exists
+        def id_exists(user_id):
+            db.cursor.execute("SELECT * FROM users WHERE id=?", (user_id,))
+            result = db.cursor.fetchone()
+            if result:
+                return True
+            else:
+                return False
 
-        # Do you want to adjust whole row or specific column
-        adjust_type = int(input("\n1.whole row \n2.specific column \nWhat do you want to adjust: "))
+        # IF given id NOT exists restart the main function -> adjust_user()
 
+
+        #if it is ok then print the user details
+        if id_exists(user_id):
+            return user_id
+
+        if id_exists(user_id) is False:
+            print("ID does not exist in the table")
+            print("Choose another one")
+            adjust_user(db)
+
+        return user_id
+
+#function to print_selected_user
+def print_selected_user(user_id):
+    # print the selected USER
+    db.cursor.execute("SELECT * FROM users WHERE id=?", (user_id,))
+    rows = db.cursor.fetchall()
+    print('-' * 50)
+    print('user ID - fullname - firstname - lastname - email - website')
+    print('-' * 50)
+    for row in rows:
+        print('| ', end='')
+        for i in row:
+            print(i, end=' | ')
+        print('')
+    print('-' * 50)
+
+
+def adjust_row(user_id):
+    # Ask for all the details
+    fname = cs50.get_string("Enter the first name: ")
+    lname = cs50.get_string("Enter the last name: ")
+    email = input("Enter the email: ")
+    website = input("Enter the website: ")
+
+    # Update the row in the database
+    c = db.cursor
+    c.execute("UPDATE users SET firstname=?, lastname=?, email=?, website=? WHERE id=?",
+              (fname, lname, email, website, user_id))
+    db.sqliteConnection.commit()
+    #autoupdate the full name
+    c.execute("UPDATE users SET fullname=firstname || ' ' || lastname WHERE id=?", (user_id,))
+    db.sqliteConnection.commit()
+    print("User details updated successfully!")
+
+
+def adjust_column(user_id):
+    # Query the database to get a list of column names in the USERS table
+    c = db.cursor
+    c.execute("PRAGMA table_info(users)")
+    column_names = [column_info[1] for column_info in c.fetchall()]
+
+    # Ask for the column to be adjusted
+    column = input("Enter the column name to be adjusted: ")
+    while column not in column_names:
+        print("Invalid column name. Please try again.")
+        column = input("Enter the column name to be adjusted: ")
+
+    # Update the column in the database
+    value = input("Enter the new value: ")
+    c.execute("UPDATE users SET {}=? WHERE id=?".format(column), (value, user_id))
+    db.sqliteConnection.commit()
+    # autoupdate the full name
+    c.execute("UPDATE users SET fullname=firstname || ' ' || lastname WHERE id=?", (user_id,))
+    db.sqliteConnection.commit()
+    print("User details updated successfully!")
+
+
+
+
+
+#choose which want toch adjust row or column
+def adjust_type_func(user_id):
+    """
+            # Do you want to adjust whole row or specific column
+    :return: row or column
+    """
+    adjust_type = cs50.get_int("Choose what do you want to adjust:"
+                               "\n1.whole row "
+                               "\n2.specific column "
+                               "\nChoose: ")
+    if adjust_type != 1 or adjust_type !=2:
         if adjust_type == 1:
-            # Ask for all the details
-            fname = input("Enter the first name: ")
-            lname = input("Enter the last name: ")
-            email = input("Enter the email: ")
-            website = input("Enter the website: ")
+            print_selected_user(user_id)
+            adjust_row(user_id)
+            return adjust_type
 
-            # Update the row in the database
-            c = db.cursor
-            c.execute("UPDATE users SET firstname=?, lastname=?, email=?, website=?, WHERE id=?",
-                      (fname, lname, email,website, user_id))
-            db.sqliteConnection.commit()
-            print("User details updated successfully!")
         elif adjust_type == 2:
-            def adjust_column():
-                # Ask for the column to be adjusted
-                column = input("Enter the column name to be adjusted: ")
-                value = input("Enter the new value: ")
 
-                # Update the column in the database
-                c = db.cursor
-                c.execute("UPDATE users SET {}=? WHERE id=?".format(column), (value, user_id))
-                db.sqliteConnection.commit()
-                print("User details updated successfully!")
-            adjust_column()
+            print_selected_user(user_id)
+            adjust_column(user_id)
+            return adjust_type
+
+        else:
+            print('Choose a valid number!')
+            adjust_type_func(user_id)
+
+def more_adjustments():
+    more = cs50.get_int(
+        ("Do you want to "
+         "\n1. adjust row/column of the same user  "
+         "\n2. choose another user  "
+         "\n3. exit"
+         "\nChoose: "))
+    return more
+
+
+def extra(user_id,more):
+    while True:
+        # Ask if user wants to adjust more column or choose another row/user
+        if more == 1:  # adjust same user
+            adjust_type_func(user_id)
+            more_adjustments()
+        elif more == 2:  # another row/user
+            adjust_user(db)
+            adjust_type_func(user_id)
+            more_adjustments()
+        elif more == 3:
+            break
 
 
 def adjust_user_run():
     # Connect to the database
 
-    while True:
+
         # Adjust user details
-        adjust_user(db)
+        user_id = adjust_user(db)
+        adjust_type_func(user_id)
+        more = more_adjustments()
+        extra(user_id,more)
 
-        # Ask if user wants to adjust more column or choose another row/user
-        more = int(
-            input("Do you want to "
-                  "\n1. adjust more column of the user  "
-                  "\n2. choose another row/user  "
-                  "\n3. exit"
-                  "\nChoose: "))
-        if more == 1: #another column
-            #Choose the column ; DONE
-            adjust_column()
-        elif more == 2: #another row/user
-            #print users
-            User.show_users(project_id=-1)
-            #Choose the user
-                #ROW or COLUMN ?
-                    #if row -> adjust row
-                    #if column -> adjust columnt
-            continue
-        elif more == 3:
-            #exit to main menu
-            break
 
+
+
+#1 error cant fix: after making mistake of choosing the users to adjust,
+# we choose specific column and PRINTING does not show the information about user.
+
+
+
+
+
+
+#test1 - Users - Adjust - ID of the user:
+    #put letter - FIXED
+    #put unknown id - fixed
+
+#test2 - Users - Adjust - ID of the user - specific column
+    #put a mistake in a name of the column - FIXED!!
+    #if the column != column in USERS then ask again for the column! -- FIXED!!
+
+#test3 - Users - Adjust - ID of the user - whole row
+    # error on whole row adjustment - syntax error WHERE etc -FIXED!!!!
+
+#test4 - Users - Adjust - ID of the user - specific column - Adjust row/column of the same user
+ #-fixed
+
+
+#problem the full name does not updates after the chaning the firstname or lastname --- FIXED!!!
 

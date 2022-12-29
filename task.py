@@ -1,8 +1,4 @@
-import datetime
 import database_functions as dbf
-import sqlite3
-import databaseconnection as db
-from baseclass import BaseClass
 
 
 class Task(BaseClass):
@@ -29,7 +25,7 @@ class Task(BaseClass):
     @property
     def id(self) -> int:
         return self._id
-
+    
     @id.setter
     def id(self, value):
         if not isinstance(value, int):
@@ -174,12 +170,14 @@ class Task(BaseClass):
         """
         try:
             pass
+        #query to get the date from SQL
+        #assing the variables to those values... 
 
         except Exception as e:
             print(e)
         # query to get the date from SQL
         # assing the variables to those values...
-
+ 
     # function: to write TO SQL
     # note: if we define the pointer in main, how does that inherit?
     @from_db.setter

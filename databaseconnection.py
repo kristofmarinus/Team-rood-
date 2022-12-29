@@ -1,6 +1,5 @@
 import os
 import platform
-print(type(platform.system()))
 if platform.system == "Darwin":
     schemaname = '/Users/dastanmirzayev/Team-rood-/rooddb.db'
 else: 
