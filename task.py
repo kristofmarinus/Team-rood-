@@ -7,21 +7,33 @@ class Task(BaseClass):
     # also: how are we gonna handle None (Null) values?
     # it might be interesting to set a trigger in the database to keep track off when a task changes
     _tablename = 'tasks'
+<<<<<<< Updated upstream
     _id = None  # this might have to be deleted... for adding a new Task maybe we should let the SQLite autoincrement do its thing instead
 
     _fk_project_id = None  # maybe 0 is a bad option here..
     _fk_user_id = None  # maybe this needs to be an instance variable.. not every task has a user assigned to it
     _task_date_added = None  # look at this again later... datetime.datetime.now() in setter looks like best options
     _task_deadline = None  # look at this again later.. not every task needs a deadline
+=======
+    _id = None  
+    _fk_project_id = None 
+    _fk_user_id = None  
+    _task_date_added = None 
+    _task_deadline = None 
+>>>>>>> Stashed changes
     _task_descr = None
     _task_progress = None
     _task_started_on = None
     _task_finished_on = None
 
+<<<<<<< Updated upstream
     # _date_changed = None  #do we need to keep track of this? trigger in database seems like best option
 
     # getters and setters for all the attributes...
     # note: date will be difficult...
+=======
+    #getters and setters for all the attributes... 
+>>>>>>> Stashed changes
     @property
     def id(self) -> int:
         return self._id
@@ -201,12 +213,18 @@ class Task(BaseClass):
         # als we een nieuwe task aanmaken moeten we die GEEN id geven. Dat doet de database zelf bij het wegschrijven...
         try:
             query1 = f'insert into {self._tablename} '
+<<<<<<< Updated upstream
             # query2= f'(task_descr, fk_user_id, fk_project_id, task_date_added) '
             query2 = f'(task_descr, fk_user_id, fk_project_id, task_date_added, task_deadline, task_progress, task_started_on, task_finished_on) '
             query3 = f'values '
             # query4 = f'("{self.task_descr}" , {self.fk_user_id} , {self.fk_project_id}, {self.task_date_added});'.replace('None', 'Null')
             query4 = f'("{self.task_descr}" , {self.fk_user_id} , {self.fk_project_id}, "{self.task_date_added}", "{self.task_deadline}", {self.task_progress},  "{self.task_started_on}", "{self.task_finished_on}");'.replace(
                 '"None"', 'Null').replace('None', 'Null')
+=======
+            query2= f'(task_descr, fk_user_id, fk_project_id, task_date_added, task_deadline, task_progress, task_started_on, task_finished_on) '
+            query3 = f'values '
+            query4 = f'("{self.task_descr}" , {self.fk_user_id} , {self.fk_project_id}, "{self.task_date_added}", "{self.task_deadline}", {self.task_progress},  "{self.task_started_on}", "{self.task_finished_on}");'.replace('"None"', 'Null').replace('None', 'Null')
+>>>>>>> Stashed changes
             query = query1 + query2 + query3 + query4
             print(query)
             count = db.cursor.execute(query)
