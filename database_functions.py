@@ -51,7 +51,7 @@ def give_record(tablename:str, id:int)->list:
         print('Error occured - ', error)
 
 
-def print_record(tablename:str, result:list, list_justify = [], no_columnames = False):
+def print_record(tablename:str, result:list, list_justify = [], no_columnames = False, filtered = True):
     """prints a single record (given as parameter: "result")
     when called by the function "print_table" the list_justify has to be given by the print_table function 
     and no_columnnames set to True.
@@ -65,7 +65,7 @@ def print_record(tablename:str, result:list, list_justify = [], no_columnames = 
     """
     if len(list_justify) == 0:
         list_justify = get_justify_values(tablename, result)
-    number_colums = number_of_columns(tablename)
+    number_colums = len(result[0])
 
     if no_columnames == False: 
         #get and print the columnames:
@@ -90,7 +90,7 @@ def print_table(tablename:str, result:list):
     if len(result) == 0:
         print('lege tabel!')
     list_justify = get_justify_values(tablename, result)
-    number_colums = number_of_columns(tablename)
+    number_colums = len(result[0])
    #print columnames:   
     print(give_string_columnames(tablename, list_justify))    
     #iterate over the table and print every record:  
@@ -114,8 +114,7 @@ def give_string_columnames(tablename:str, list_justify:list)->str:
         query = 'select * from ' + tablename + ";"
         count = db.cursor.execute(query)
         result = db.cursor.fetchall()
-        #list_justify = get_justify_values(tablename)
-        number_colums = number_of_columns(tablename)
+        number_colums = len(list_justify)
         list_column_names = get_column_names(tablename)
         string_columnames = ''
         for index in range(number_colums):
@@ -207,21 +206,26 @@ def delete_fieldname(tablename, id, fieldname):
         print('Error occured - ', error)
 
 
-def get_justify_values(tablename:str, table)->list:
-    """return the justify values used for "fancyprint"
+def get_justify_values(tablename:str, table:list, filtered = True)->list:
+    """return the justify values used for print table. 
 
     Args:
         tablename (_str_): name of table
+        table (_list_): 
+        filtered (_bool_): set to False if you want justify list for ALL the columnnames
         
 
     Returns:
-        list: list of the justify values for every column (integer values)
+        list: list of the justify values for every column in the table or filtered table (integer values)
     """
     extra_space = 1
     number_columns = len(table[0])
     number_records = len(table)
     list_justify_values = []
-    list_columnames = get_column_names(tablename)
+    if filtered:
+        list_columnames = get_column_names_filtered(tablename)
+    if not filtered: 
+        list_columnames = get_column_names(tablename)
     #f!rst we look for the longest VALUE in a table
     #iterate over the columns
     for column_index in range(number_columns):
@@ -376,6 +380,7 @@ def get_columns_not_shown(list_all_columnnames:list, list_columns_shown:list)->l
             list_columns_not_shown.append(columnname)
     return list_columns_not_shown
     
+
 def show_options_toggle(tablename, list_columns_shown:list, list_columns_not_shown: list):
     """handles the menu for changing the columns that are/are not displayed in table view. called by do_menu_toggle
 
@@ -444,6 +449,68 @@ def show_options_toggle(tablename, list_columns_shown:list, list_columns_not_sho
         return show_options_toggle(tablename, list_columns_shown, list_columns_not_shown)
  
 
+def get_column_names_filtered(tablename:str)->list:
+    """returns a list with the column names that will be shown. The main purpose of this function is SORTING the list of column names 
+
+    Args:
+        tablename (string): string of tablenames, for example "tasks"
+
+    Returns:
+        list: sorted list of the column names that will be displayed
+    """
+    all_column_names = get_column_names(tablename)
+    column_names_shown = get_columns_shown(tablename)
+    column_names_filtered = []
+    for column_name in all_column_names:
+        if column_name in column_names_shown:
+            column_names_filtered.append(column_name)
+    return column_names_filtered
+
+
+
+def filter_list(tablename:str)->list:
+    """generated a list of True or False values. for every columnname in the table that value showes if it is displayed or not
+
+    Args:
+        tablename (str): string of tablename. for example: "tasks"
+
+    Returns:
+        list: list with same length as number of columns of the table; Every value is True: column is displayed, or False: column is not displayed
+    """
+    all_column_names = get_column_names(tablename)
+    column_names_shown = get_columns_shown(tablename)
+    filter = []
+    for column_name in all_column_names:
+        if column_name in column_names_shown:
+            filter.append(True)
+        else:
+            filter.append(False)
+    return filter
+
+def give_record_filtered(tablename:str, id:int)->list:
+    tupple_record = give_record(tablename,id)[0]
+    list_record = list(tupple_record)
+    filter = filter_list(tablename)
+    list_record_filtered = []
+    for index in range(len(list_record)):
+        if filter[index]:
+            list_record_filtered.append(list_record[index])
+    # return a list containing list_record_filtered (because function give_record gives similar return)
+    return [list_record_filtered]
+
+def give_table_filtered(tablename:str)->list:
+    table_unfiltered = give_table(tablename)
+    filter = filter_list(tablename)
+    table_filtered = []
+    for record in table_unfiltered:
+        list_record = list(record)
+        record_filtered = []
+        for index in range(len(list_record)):
+            if filter[index]:
+                record_filtered.append(list_record[index])
+        table_filtered.append(record_filtered)
+    return table_filtered
+    
 
 
 
@@ -455,6 +522,7 @@ def do_menu_toggle(tablename:str):
     Args:
         tablename (str): string of tablename. for example: "tasks"
     """
+    
     #initialize list_columnnames shown and list_columnnames_not_shown
     list_columnnames_shown = get_columns_shown(tablename)
     list_all_columnnames = get_column_names(tablename)
@@ -470,8 +538,13 @@ def do_menu_toggle(tablename:str):
 
     
 def main():
-    do_menu_toggle("customers")
-
+    #do_menu_toggle("customers")
+    #print(get_column_names_filtered("tasks"))
+    #print(give_record("tasks", 1))
+    #print(give_record_filtered("tasks", 1))
+    #print(get_justify_values("tasks" ,give_record_filtered("tasks", 1)))
+    #print_record("tasks",give_record_filtered("tasks", 1), get_justify_values("tasks" ,give_record_filtered("tasks", 1)))
+    print_table("tasks", give_table_filtered('tasks'))
 
 
 if __name__ == '__main__':
