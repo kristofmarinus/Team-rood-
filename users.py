@@ -229,8 +229,8 @@ def print_selected_user(user_id):
 
 def adjust_row(user_id):
     # Ask for all the details
-    fname = input("Enter the first name: ")
-    lname = input("Enter the last name: ")
+    fname = cs50.get_string("Enter the first name: ")
+    lname = cs50.get_string("Enter the last name: ")
     email = input("Enter the email: ")
     website = input("Enter the website: ")
 
@@ -238,6 +238,9 @@ def adjust_row(user_id):
     c = db.cursor
     c.execute("UPDATE users SET firstname=?, lastname=?, email=?, website=? WHERE id=?",
               (fname, lname, email, website, user_id))
+    db.sqliteConnection.commit()
+    #autoupdate the full name
+    c.execute("UPDATE users SET fullname=firstname || ' ' || lastname WHERE id=?", (user_id,))
     db.sqliteConnection.commit()
     print("User details updated successfully!")
 
@@ -257,6 +260,9 @@ def adjust_column(user_id):
     # Update the column in the database
     value = input("Enter the new value: ")
     c.execute("UPDATE users SET {}=? WHERE id=?".format(column), (value, user_id))
+    db.sqliteConnection.commit()
+    # autoupdate the full name
+    c.execute("UPDATE users SET fullname=firstname || ' ' || lastname WHERE id=?", (user_id,))
     db.sqliteConnection.commit()
     print("User details updated successfully!")
 
@@ -290,34 +296,48 @@ def adjust_type_func(user_id):
             print('Choose a valid number!')
             adjust_type_func(user_id)
 
+def more_adjustments():
+    more = cs50.get_int(
+        ("Do you want to "
+         "\n1. adjust row/column of the same user  "
+         "\n2. choose another user  "
+         "\n3. exit"
+         "\nChoose: "))
+    return more
+
+
+def extra(user_id,more):
+    while True:
+        # Ask if user wants to adjust more column or choose another row/user
+        if more == 1:  # adjust same user
+            adjust_type_func(user_id)
+            more_adjustments()
+        elif more == 2:  # another row/user
+            adjust_user(db)
+            adjust_type_func(user_id)
+            more_adjustments()
+        elif more == 3:
+            break
+
+
 def adjust_user_run():
     # Connect to the database
 
-    while True:
+
         # Adjust user details
         user_id = adjust_user(db)
         adjust_type_func(user_id)
+        more = more_adjustments()
+        extra(user_id,more)
 
-        # Ask if user wants to adjust more column or choose another row/user
-        more = cs50.get_int(
-                    ("Do you want to "
-                  "\n1. adjust row/column of the same user  "
-                  "\n2. choose another user  "
-                  "\n3. exit"
-                  "\nChoose: "))
-        if more == 1: #adjust same user
-            adjust_user(db).adjust_type()
-        elif more == 2: #another row/user
-            #print users
-            User.show_users(project_id=-1)
-            #Choose the user
-                #ROW or COLUMN ?
-                    #if row -> adjust row
-                    #if column -> adjust columnt
-            continue
-        elif more == 3:
-            #exit to main menu
-            break
+
+
+
+#1 error cant fix: after making mistake of choosing the users to adjust,
+# we choose specific column and PRINTING does not show the information about user.
+
+
+
 
 
 
@@ -332,13 +352,9 @@ def adjust_user_run():
 #test3 - Users - Adjust - ID of the user - whole row
     # error on whole row adjustment - syntax error WHERE etc -FIXED!!!!
 
-
-
-
-
 #test4 - Users - Adjust - ID of the user - specific column - Adjust row/column of the same user
+ #-fixed
 
 
-#problem the full name does not updates after the chaning the firstname or lastname
+#problem the full name does not updates after the chaning the firstname or lastname --- FIXED!!!
 
-#error cant fix: after making mistake of choosing the users to adjust, we choose specific column and PRINTING does not show the information about user.
