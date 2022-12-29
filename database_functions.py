@@ -487,7 +487,17 @@ def filter_list(tablename:str)->list:
             filter.append(False)
     return filter
 
+
 def give_record_filtered(tablename:str, id:int)->list:
+    """return the filtered version of the record (only with the columns that are to be displayed)
+
+    Args:
+        tablename (str): string of the tablename, for example "tasks"
+        id (int): id of the record
+
+    Returns:
+        list: record with only the displayed columns
+    """
     tupple_record = give_record(tablename,id)[0]
     list_record = list(tupple_record)
     filter = filter_list(tablename)
@@ -498,7 +508,17 @@ def give_record_filtered(tablename:str, id:int)->list:
     # return a list containing list_record_filtered (because function give_record gives similar return)
     return [list_record_filtered]
 
+
+
 def give_table_filtered(tablename:str)->list:
+    """returns the filtered version of the table (only with the columns that are to be displayed)
+
+    Args:
+        tablename (str): string of tablename, for example: "tasks"
+
+    Returns:
+        list: list containing lists (every sublist is a record)
+    """
     table_unfiltered = give_table(tablename)
     filter = filter_list(tablename)
     table_filtered = []
