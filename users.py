@@ -322,8 +322,6 @@ def extra(user_id,more):
 
 def adjust_user_run():
     # Connect to the database
-
-
         # Adjust user details
         user_id = adjust_user(db)
         adjust_type_func(user_id)
@@ -337,6 +335,8 @@ def adjust_user_run():
 # we choose specific column and PRINTING does not show the information about user.
 
 
+#make maybe custom get_email function? in library cs50?
+#make maybe custom get_website function? in library cs50?
 
 
 
