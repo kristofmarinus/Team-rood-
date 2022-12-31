@@ -564,7 +564,7 @@ def main():
     #print(give_record("tasks", 1))
     #print(give_record_filtered("tasks", 1))
     #print(get_justify_values("tasks" ,give_record_filtered("tasks", 1)))
-    #print_record("tasks",give_record_filtered("tasks", 1), get_justify_values("tasks" ,give_record_filtered("tasks", 1)))
+    print_record("users",give_record_filtered("users", 1), get_justify_values("tasks" ,give_record_filtered("tasks", 1)))
     print_table("tasks", give_table_filtered('tasks'))
 
 

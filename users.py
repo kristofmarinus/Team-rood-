@@ -1,6 +1,7 @@
 import databaseconnection as db
 from inputs import get_input_item
 from src import cs50
+import database_functions as dbf
 
 
 class User():
@@ -91,6 +92,9 @@ class User():
     @staticmethod
     def show_users(project_id=-1):
         """show all users
+        """
+        """voorstel: 
+        dbf.print_table("users", dbf.give_table_filtered('users'))
         """
         project_id = get_input_item("Enter 1 to show all users",
                                     1)
@@ -213,6 +217,10 @@ def adjust_user(db):
 
 #function to print_selected_user
 def print_selected_user(user_id):
+    """
+    voorstel: volledige functie vervangen door: 
+    dbf.print_record("users",dbf.give_record_filtered("users", user_id), dbf.get_justify_values("users" ,dbf.give_record_filtered("users", user_id)))
+    """
     # print the selected USER
     db.cursor.execute("SELECT * FROM users WHERE id=?", (user_id,))
     rows = db.cursor.fetchall()
@@ -225,6 +233,9 @@ def print_selected_user(user_id):
             print(i, end=' | ')
         print('')
     print('-' * 50)
+    
+
+
 
 
 def adjust_row(user_id):
