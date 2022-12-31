@@ -279,6 +279,7 @@ def newline_removed(list_input:list)->list:
             list_output.append(line.replace('\n',''))
     return list_output
 
+
 def newline_added(list_input: list)->list:
     """adds the "new line" character "\n" to every element in a list
 
