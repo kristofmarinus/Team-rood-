@@ -252,7 +252,6 @@ class Task(BaseClass):
                 query_together = query1 + query2 + query3 + query4
                 #cleaning up the query for SQL synstax:
                 query = query_together.replace('"None"', 'Null').replace('None', 'Null')
-                print(query)
                 count = db.cursor.execute(query)
                 db.sqliteConnection.commit()
             except sqlite3.Error as error:

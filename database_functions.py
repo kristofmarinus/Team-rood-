@@ -100,22 +100,27 @@ def print_table(tablename:str, result:list):
 
       
   
-def give_string_columnames(tablename:str, list_justify:list)->str:
+def give_string_columnames(tablename:str, list_justify:list, filtered = True)->str:
     """returns a string of columnames, used in print_table() and print_record()
 
     Args:
         tablename (_str_): name of the table
         list_justify(_list_): list containing the justify values for printing
+        filtered(bool): set to False to get ALL columnnames in that table
 
     Returns:
         _str_: formatted string of the columnames
     """
     try: 
-        query = 'select * from ' + tablename + ";"
-        count = db.cursor.execute(query)
-        result = db.cursor.fetchall()
+        if filtered == False: 
+            query = 'select * from ' + tablename + ";"
+            count = db.cursor.execute(query)
+            result = db.cursor.fetchall()
+            number_colums = len(list_justify)
+            list_column_names = get_column_names(tablename)
+        elif filtered == True: 
+            list_column_names = get_columns_shown(tablename)
         number_colums = len(list_justify)
-        list_column_names = get_column_names(tablename)
         string_columnames = ''
         for index in range(number_colums):
             string_columnames += '| ' + str(list_column_names[index]).strip().ljust(list_justify[index]) 
