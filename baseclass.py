@@ -26,3 +26,16 @@ class BaseClass():
         except: 
             raise ValueError('date (string) is incorrectly formatted for conversion, use YYYY/MM/DD')
 
+
+def main():
+    test_class = BaseClass()
+    test_string = '2000/10/10'
+    print(test_string)
+    print(test_class.str_to_date(test_string))
+   
+
+
+
+if __name__ == '__main__':
+    main()
+

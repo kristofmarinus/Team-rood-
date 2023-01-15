@@ -3,6 +3,8 @@ import databaseconnection as db
 from baseclass import BaseClass
 import datetime
 import sqlite3
+from get_input import get_input
+
 
 
 class Task(BaseClass):
@@ -12,12 +14,12 @@ class Task(BaseClass):
     # it might be interesting to set a trigger in the database to keep track off when a task changes
     _tablename = 'tasks'
 
-    _id = None  
-    _fk_project_id = None 
+    _id = None #not Null constraint in database
+    _task_descr = None #not Null constraint in database
+    _fk_project_id = None #not Null constraint in database
     _fk_user_id = None  
     _task_date_added = None 
     _task_deadline = None 
-    _task_descr = None
     _task_progress = None
     _task_started_on = None
     _task_finished_on = None
@@ -261,10 +263,85 @@ class Task(BaseClass):
     def __str__(self):
         return self.__dict__()
 
+
+
+def create_task():
+    print('Creating a new task! Please give the required info: ')
+    new_task = Task()
+    new_task.task_descr = input('please give the task description: ')
+    #get project_id for the task (project is can not be None): 
+    while True: 
+        print('A task has to be assigned to a project. Here is the list of projects: ')
+        #print the table of all projects: 
+        dbf.print_table('projects', dbf.give_table_filtered('projects'))
+        #get input for the new project (has to be an integer)
+        project = get_input('Give the project to assign this task to: ', 1)
+        # test if the input value is the id of an existing project: 
+        list_project_id = dbf.give_id_table('projects')
+        if project in list_project_id:
+            new_task.fk_project_id = project
+            break 
+        else: 
+            print("-" * 35)
+            print("-" * 35)
+            print('invalid choice! pleace choose one of the existing projects!')
+    #(optional): get user assigned to task
+    while True: 
+        print('Do you want to assign a user to this project? if not: type NO, if yes: type YES')
+        input_dialog = get_input('Yes/No : ').lower().strip()
+        if input_dialog == "no":
+            new_task.fk_user_id = None
+            break
+        if input_dialog == "yes":
+            print('you chose to assing a user. This is a list of all the users: ')
+            dbf.print_table("users", dbf.give_table_filtered("users"))
+            #loop to get the input, and check if input is an ID that is in the table "users"
+            while True: 
+                print()
+                input_id = get_input('give id of the user you want to assing this task to: ', 1)
+                list_user_id = dbf.give_id_table("users")
+                if input_id in list_user_id:
+                    new_task.fk_user_id = input_id
+                    break
+                else: 
+                    print("-" * 35)
+                    print("-" * 35)
+                    print('invalid choice! pleace choose one of the existing users!')
+        break
+    #(optional): get a deadline for the task
+    while True: 
+        print('Do you want to assign a deadline to this project? if not: type NO, if yes: type YES')
+        input_dialog = get_input('Yes/No : ').lower().strip()
+        if input_dialog == "no": #ad getter setter for deadline
+            new_task.task_deadline = None
+            break
+        if input_dialog == "yes":
+            input_deadline = get_input('Please give the deadline in format: YYYY/MM/DD: ')
+            try: 
+                new_task = new_task.str_to_date(input_deadline)
+                break
+            except: 
+                print('date format was incorrect! please use YYYY/MM/DD')
+    #dialog for saving the task: 
+    while True: 
+        input_dialog = get_input('you have completed the input for this task. Do you want to save it? YES/NO: ').lower().strip()
+        if input_dialog == 'yes':
+            new_task.to_db()
+            break
+        else: 
+            print('invalid input... please try again. ')
+
+    
+                    
+
+
+
+
+
 # funtion to CHANGE a task (like assign user)
 # should be two functions: get input + change task
 def main():
-    pass
+    create_task()
    
 
 

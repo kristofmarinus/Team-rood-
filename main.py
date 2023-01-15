@@ -1,6 +1,7 @@
 import databaseconnection as db  #database connection is made through db
 import database_functions as dbf
 from task import Task
+import task
 import inputs
 #import users
 
@@ -110,15 +111,15 @@ def menu_user():
 def menu_header_task()->int: 
     print("-" * 35)
     print("-" * 35)
-    print("USER MENU")
+    print("TASK MENU")
     print("")
+    print(f'{C_ACTION_RETURN}. Return to main menu')
     print(f'{C_ACTION_MAKE_TASK}. Create task')
     print(f'{C_ACTION_SHOW_TASKS}. Show tasks')
     ##print(f'{C_ACTION_ADJUST_USER}. ADJUST/UPDATE users')
     #print("-" * 35)
     #print(f'{C_ACTION_DELETE_USER}. Delete users')
     #print("-" * 35)
-    #print(f'{C_ACTION_RETURN}. Return to main menu')
     print(f'{C_ACTION_CHANGE_PRINT_OPTIONS}. Change display options for tables/records')
     #print("-" * 35)
     #print("-" * 35)
@@ -135,15 +136,19 @@ def do_menu_task():
     while loop:
         choice = menu_header_task()
         if choice == C_ACTION_MAKE_TASK:
-            pass #aanvulllen!
-            loop = False
+            task.create_task()
+            do_menu_task()
         if choice == C_ACTION_SHOW_TASKS:
             dbf.print_table("tasks", dbf.give_table_filtered("tasks"))
+        if choice == C_ACTION_RETURN:
+            loop = False
+            do_menu()          
         if choice == C_ACTION_CHANGE_PRINT_OPTIONS:
             dbf.do_menu_toggle('tasks')
+            do_menu_task()
 
 
-            loop = False
+           
 
 
 

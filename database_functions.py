@@ -119,7 +119,7 @@ def give_string_columnames(tablename:str, list_justify:list, filtered = True)->s
             number_colums = len(list_justify)
             list_column_names = get_column_names(tablename)
         elif filtered == True: 
-            list_column_names = get_columns_shown(tablename)
+            list_column_names = get_column_names_filtered(tablename)
         number_colums = len(list_justify)
         string_columnames = ''
         for index in range(number_colums):
@@ -396,6 +396,8 @@ def show_options_toggle(tablename, list_columns_shown:list, list_columns_not_sho
         list_columns_not_shown (list): list containing the columns that are not displayed
 
     """
+    print("-" * 35)
+    print("-" * 35)
     #make list with indexes "A" for columnnames that are shown:
     list_index_a = []
     for index in range(len(list_columns_shown)):
@@ -431,13 +433,10 @@ def show_options_toggle(tablename, list_columns_shown:list, list_columns_not_sho
         print(string_print)
     print("\n")
     #get user input:
-    user_choice = input('give the index of the columnname you want to toggle, or type SAVE or type STOP: ')
+    user_choice = input('give the index of the columnname you want to toggle, or type STOP to save and stop: ')
     #action based on user input: 
     if user_choice.lower().strip() == "stop":
-        pass  # this has to become: return to main menu....
-    elif user_choice.lower().strip() == "save":
-        save_columns_shown(tablename, list_columns_shown)
-
+        save_columns_shown(tablename, list_columns_shown) 
     elif user_choice.upper() in list_index_a:
         index = int(user_choice[1:])-1
         columnname = list_columns_shown[index]
@@ -504,14 +503,18 @@ def give_record_filtered(tablename:str, id:int)->list:
     Returns:
         list: record with only the displayed columns
     """
+    #get the whole record: 
     tupple_record = give_record(tablename,id)[0]
+    #make the tupple into a list: 
     list_record = list(tupple_record)
+    #get the filter list (True of False value for every column in the table)
     filter = filter_list(tablename)
+    #initialize empty list and then loop through the record, only add the columns with "True" in filter
     list_record_filtered = []
     for index in range(len(list_record)):
         if filter[index]:
             list_record_filtered.append(list_record[index])
-    # return a list containing list_record_filtered (because function give_record gives similar return)
+    # return the result in a list (!) (because function give_record returns a list containing a tupple, so we want the same format)
     return [list_record_filtered]
 
 
@@ -525,9 +528,13 @@ def give_table_filtered(tablename:str)->list:
     Returns:
         list: list containing lists (every sublist is a record)
     """
+    #get the whole table:
     table_unfiltered = give_table(tablename)
+    #get the filter list (True of False value for every column in the table)
     filter = filter_list(tablename)
+    #initialize empty table: 
     table_filtered = []
+    #loop through the table, and then loop through every record, and only add the columns with "True" value in filter to record_rilted for every record
     for record in table_unfiltered:
         list_record = list(record)
         record_filtered = []
@@ -557,20 +564,30 @@ def do_menu_toggle(tablename:str):
     show_options_toggle(tablename, list_columnnames_shown, list_columnnames_not_shown)
 
 
+def give_id_table(tablename: str)-> list:
+    """return a list containing all the id's in a table
 
+    Args:
+        tablename (str): string of tablename. for example: "tasks"
+
+    Returns:
+        list: list containing all the id's of a table as integers. for exaple: [1,2,3]
+    """
+    #get the whole table: 
+    table = give_table(tablename)
+    #initialize empty list to which we will add all the id's:
+    list_id = []
+    #loop through the table and add the id's to list_id:
+    for record in table: 
+        list_id.append(record[0])
+    return list_id
 
     
 
 
     
 def main():
-    #do_menu_toggle("customers")
-    #print(get_column_names_filtered("tasks"))
-    #print(give_record("tasks", 1))
-    #print(give_record_filtered("tasks", 1))
-    #print(get_justify_values("tasks" ,give_record_filtered("tasks", 1)))
-    print_record("users",give_record_filtered("users", 1), get_justify_values("tasks" ,give_record_filtered("tasks", 1)))
-    print_table("tasks", give_table_filtered('tasks'))
+    give_id_table('projects')
 
 
 if __name__ == '__main__':
