@@ -1,4 +1,4 @@
-import databaseconnection as db  #database  is made in through db
+import databaseconnection as db  #database connection is made through db
 import database_functions as dbf
 from task import Task
 import inputs
