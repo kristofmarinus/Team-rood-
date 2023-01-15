@@ -1,114 +1,398 @@
+import databaseconnection as db
+from inputs import get_input_item
+from src import cs50
 import datetime
 import database_functions as dbf
 
 class Project():
+    _id = ""
+    _project_name = ""
+    _project_descr = ""
+    _fk_customer_id = ""
+    _project_date_added = ""
+    _project_deadline = ""
+    _project_finished_on = "none"
 
-    _id = 'aap'
-    _project_name = None
-    _project_descr = None
-    _fk_customer_id = None
-    _project_date_added = None
-    _project_deadline = None
-    _project_finished = None
-
-    @property
-    def id(self):
-        return self._id
-    
-    @id.setter
-    def id(self, value):
-        if not isinstance(value, int):
-            raise TypeError('id moet een integer zijn')
-        elif value >0: 
-            self._id = value
-        else: 
-            raise ValueError('id moet positief zijn')
 
     @property
-    def project_name(self):
+    def project_name(self) -> str:
         return self._project_name
 
     @project_name.setter
     def project_name(self, value):
-        if value is not None:
-            self._project_name = value
+        #note: setting project_name to None/Null is not allowed
+        if value is None: 
+            raise TypeError("project_name can not be None/Null")
+        else: 
+            try:
+                self._project_name = str(value)
+            except: 
+                raise TypeError('project_name has to be a string, or a type that can be converted to a string')
+
 
     @property
-    def project_descr(self):
+    def project_descr(self) -> str:
         return self._project_descr
 
     @project_descr.setter
     def project_descr(self, value):
-        if value is not None:
-            self._project_descr = value
+        #note: setting project_descr to None/Null is not allowed
+        if value is None: 
+            raise TypeError("project_descr can not be None/Null")
+        else: 
+            try:
+                self._project_descr = str(value)
+            except: 
+                raise TypeError('project_descr has to be a string, or a type that can be converted to a string')
 
-     @property
-    def fk_customer_id(self):
+
+    @property
+    def fk_customer_id(self) -> int:
         return self._fk_customer_id
 
     @fk_customer_id.setter
-    def fk_customer_id(self, value):
-        if value is not None:
-            self._fk_customer_id = value
+    def fk_customer_id(self, value: int):
+        #note: setting fk_customer_id to None is not allowed
+        try:
+            value = int(value)
+            if value > 0:
+                self.fk_customer_id = value
+            else: 
+                raise ValueError('fk_customer_id has to be positive')
 
-     @property
+        except: 
+            raise TypeError('fk_customer_id has to be an integer, or a type that can be converted to an integer')
+
+
+    @property
     def project_date_added(self):
-        return self.project_date_added
+        if isinstance(self._project_date_added, datetime.date):
+            return super().date_to_str(self._project_date_added)
+        elif self._project_date_added is None:
+            return None
+        else:
+            raise TypeError('date attribute is in wrong type')
+
 
     @project_date_added.setter
     def project_date_added(self, value):
-        if value is not None:
+        if isinstance(value, datetime.date):
             self._project_date_added = value
+        elif isinstance(value, str):
+            self._project_date_added = super().str_to_date(value)
+        elif value is None:
+            self._project_date_added = None
+        else:
+            raise TypeError('date is in wrong type')
 
-     @property
+
+    @property
     def project_deadline(self):
-        return self._project_deadline
+        if isinstance(self._project_deadline, datetime.date):
+            return super().date_to_str(self._project_deadline)
+        elif self._project_deadline is None:
+            return None
+        else:
+            raise TypeError('date paramater is in wrong type')
 
     @project_deadline.setter
     def project_deadline(self, value):
-        if value is not None:
+        if isinstance(value, datetime.date):
             self._project_deadline = value
-
-     @property
-    def project_finished(self):
-        return self._project_finished
-
-    @project_finished.setter
-    def project_finished(self, value):
-        if value is not None:
-            self._project_finished = value
+        elif isinstance(value, str):
+            self._deadline = super().str_to_date(value)
+        elif value is None:
+            self._project_deadline = None
+        else:
+            raise TypeError('date is in wrong type')
 
     @property
-    def from_sql(self):
-        """sets  the variables of an instance to the values from the database
+    def project_finished_on(self):
+        if isinstance(self._project_finished_on, datetime.date):
+            return super().date_to_str(self._project_finished_on)
+        elif self._project_finished_on is None:
+            return None
+        else:
+            raise TypeError('date paramater is in wrong type')
+
+    @project_finished_on.setter
+    def project_finished_on(self, value):
+        if isinstance(value, datetime.date):
+            self._project_finished_on = value
+        elif isinstance(value, str):
+            self._project_finished_on = super().str_to_date(value)
+        elif value is None:
+            self._project_finished_on = None
+        else:
+            raise TypeError('date is in wrong type')
+
+    @property
+    def write_project(self):
+        """writes project to the database
         """
-        try: 
-            pass
-
+        try:
+            sql_cmd = f"insert into projects (project_name, project_descr, fk_customer_id, project_date_added, project_deadline, project_finished_on) values ('{self._project_name}','{self._project_descr}', '{self._fk_customer_id}', '{self._project_date_added}', '{self._project_deadline}', '{self._project_finished_on}');"
+            db.cursor.execute(sql_cmd)
+            db.sqliteConnection.commit()
         except Exception as e:
-            print(e)
-        #query to get the date from SQL
-        #assing the variables to those values... 
+            print(f'fout def.write_project: {e}')
 
-    #function: to write TO SQL
-    #note: if we define the pointer in main, how does that inherit? 
-    @from_sql.setter
-    def from_sql(self, id:int):
-        try: 
-            self.id = dbf.give_field('projects', id, 'id')
-            self.project_name = dbf.give_field('projects', id, 'project_name')
-            self.project_descr = dbf.give_field('projects', id, 'project_descr')
-            self.fk_customer_id = dbf.give_field('projects', id, 'fk_customer_id')
-            self.project_date_added = dbf.give_field('projects', id, 'project_date_added')
-            self.project_deadline = dbf.give_field('projects', id, 'project_deadline')
-            self.project_finished = dbf.give_field('projects', id, 'project_finished')
+    @staticmethod
+    def delete_project(inp: int):
+        """delete project from database
 
-
+        Args:
+            inp (int): id nr of project to be deleted
+        """
+        try:
+            sql_cmd = f'delete from projects where id = {inp};'
+            db.cursor.execute(sql_cmd)
+            db.sqliteConnection.commit()
+            print('project deleted')
         except Exception as e:
-            print(f'error in module from_sql : {e}')
+            print(f'fout: {e}')
+    
+    @staticmethod
+    def show_projects():
+        """show all projects
+        """
+        """voorstel: 
+        dbf.print_table("projects", dbf.give_table_filtered('projects'))
+        """
+        project_id = get_input_item("Enter 1 to show all projects",
+                                    1)
+        #Add a feature to show projects from X-ids to Y-ids.
+        def show_projects_2(project_id):
+            try:
+                if project_id == 1:
+                    sql_cmd = 'select * from projects;'
+                db.cursor.execute(sql_cmd)
+                rows = db.cursor.fetchall()
+                print('-' * 50)
+                print('project ID - project_name - project_descr - fk_customer_id - project_date_added - project_deadline - project_finished_on')
+                print('-' * 50)
+                if len(rows) > 0:
+                    for row in rows:
+                        print('| ', end='')
+                        for i in row:
+                            print(i, end=' | ')
+                        print('')
+                else:
+                    print('geen gegevens gevonden')
+            except Exception as e:
+                print(f'fout: {e}')
+        show_projects_2(project_id)
 
-    def to_SQL(self):
-        pass
 
-    def __str__(self):
-        return self.description
+    def create_project(Project):
+        """
+
+        Asks for information
+
+        Returns:
+            Project: the project
+        """
+        project_name = get_input_item('Give project name')
+        project_descr = get_input_item('Give project description')
+        fk_customer_id = get_input_item('Give customer id')
+        project_date_added = get_input_item('Give date when project was added')
+        project_deadline = get_input_item('Give deadline')
+        project_finished_on = get_input_item('Give date when project was finished')
+        return Project
+
+
+    def add_project(create_project):
+            """
+            adds a project to the projects list
+            """
+            project = create_project()
+            project.write_project()
+
+
+    def delete_project():
+        """asks user which id to delete,
+
+        double check : yes/no
+
+            deletes the project
+        """
+        Project.show_projects()
+        inp = get_input_item("Select project id to delete", 1)
+        check = get_input_item(f'WARNING: Delete is irreparable --- enter "y" --- if you wish still to delete the project{inp}')
+        if check.strip().lower() == "y":
+            Project.delete_project(inp)
+            print(f'Project with id:{inp} was DELETED')
+        else:
+            print('Deletion was UNDONE.')
+            # UPDATE ALL TASKS WHICH DELETED ID = PROJECT ID
+
+
+    def adjust_project(db):
+
+            def print_all():
+                """
+                Print all the info of the table projects
+                return: prints all the projects
+                """
+                sql_cmd = 'select * from projects;'
+                db.cursor.execute(sql_cmd)
+                rows = db.cursor.fetchall()
+                print('-' * 50)
+                print('project ID - project_name - project_descr - fk_customer_id - project_date_added - project_deadline - project_finished_on')
+                print('-' * 50)
+                if len(rows) > 0:
+                    for row in rows:
+                        print('| ', end='')
+                        for i in row:
+                            print(i, end=' | ')
+                        print('')
+                    print('-' * 50)
+                else:
+                    print('geen gegevens gevonden')
+            print_all()
+
+            # Choose id of the project
+            project_id = cs50.get_int("Enter the id of the project: ")
+
+            #cheking if the id of the project exists
+            def id_exists(project_id):
+                db.cursor.execute("SELECT * FROM projects WHERE id=?", (project_id,))
+                result = db.cursor.fetchone()
+                if result:
+                    return True
+                else:
+                    return False
+
+            # IF given id NOT exists restart the main function -> adjust_project()
+
+
+            #if it is ok then print the project details
+            if id_exists(project_id):
+                return project_id
+
+            if id_exists(project_id) is False:
+                print("ID does not exist in the table")
+                print("Choose another one")
+                adjust_project(db)
+
+            return project_id
+
+    #function to print_selected_project
+    def print_selected_project(project_id):
+        """
+        voorstel: volledige functie vervangen door: 
+        dbf.print_record("projects",dbf.give_record_filtered("projects", project_id), dbf.get_justify_values("projects" ,dbf.give_record_filtered("projects", project_id)))
+        """
+        # print the selected PROJECT
+        db.cursor.execute("SELECT * FROM projects WHERE id=?", (project_id,))
+        rows = db.cursor.fetchall()
+        print('-' * 50)
+        print('project ID - project_name - project_descr - fk_customer_id - project_date_added - project_deadline - project_finished_on')
+        print('-' * 50)
+        for row in rows:
+            print('| ', end='')
+            for i in row:
+                print(i, end=' | ')
+            print('')
+        print('-' * 50)
+    
+
+
+
+
+    def adjust_row(project_id):
+        # Ask for all the details
+        project_name = cs50.get_string("Enter the project name: ")
+        project_descr = cs50.get_string("Enter the project description: ")
+        fk_customer_id = input("Enter the customer id: ")
+        project_date_added = input("Enter the date when project was added: ")
+        project_deadline = input("Enter the deadline: ")
+        project_finished_on = input("Enter the date project was finished: ")
+
+        # Update the row in the database
+        c = db.cursor
+        c.execute("UPDATE projects SET project_name=?, project_descr=?, fk_customer_id=?, project_date_added=?, project_deadline=?, project_finished_on=? WHERE id=?",
+                 (project_name, project_descr, fk_customer_id, project_date_added, project_deadline, project_finished_on, project_id))
+        db.sqliteConnection.commit()
+
+
+    def adjust_column(project_id):
+        # Query the database to get a list of column names in the PROJECTS table
+        c = db.cursor
+        c.execute("PRAGMA table_info(projects)")
+        column_names = [column_info[1] for column_info in c.fetchall()]
+
+        # Ask for the column to be adjusted
+        column = input("Enter the column name to be adjusted: ")
+        while column not in column_names:
+            print("Invalid column name. Please try again.")
+            column = input("Enter the column name to be adjusted: ")
+
+        # Update the column in the database
+        value = input("Enter the new value: ")
+        c.execute("UPDATE projects SET {}=? WHERE id=?".format(column), (value, project_id))
+        db.sqliteConnection.commit()
+        print("Project details updated successfully!")
+
+
+
+
+
+    #choose which want toch adjust row or column
+    def adjust_type_func(project_id):
+        """
+            # Do you want to adjust whole row or specific column
+        :return: row or column
+        """
+        adjust_type = cs50.get_int("Choose what do you want to adjust:"
+                                   "\n1.whole row "
+                                   "\n2.specific column "
+                                   "\nChoose: ")
+        if adjust_type != 1 or adjust_type !=2:
+            if adjust_type == 1:
+                print_selected_project(project_id)
+                adjust_row(project_id)
+                return adjust_type
+
+            elif adjust_type == 2:
+
+                print_selected_project(project_id)
+                adjust_column(project_id)
+                return adjust_type
+
+            else:
+                print('Choose a valid number!')
+                adjust_type_func(project_id)
+
+    def more_adjustments():
+        more = cs50.get_int(
+            ("Do you want to "
+            "\n1. adjust row/column of the same project  "
+            "\n2. choose another project  "
+            "\n3. exit"
+            "\nChoose: "))
+        return more
+
+
+    def extra(project_id,more):
+        while True:
+            # Ask if user wants to adjust more column or choose another row/project
+            if more == 1:  # adjust same project
+                adjust_type_func(project_id)
+                more_adjustments()
+            elif more == 2:  # another row/project
+                adjust_project(db)
+                adjust_type_func(project_id)
+                more_adjustments()
+            elif more == 3:
+                break
+
+
+    def adjust_project_run():
+        # Connect to the database
+        # Adjust project details
+            project_id = adjust_project(db)
+            adjust_type_func(project_id)
+            more = more_adjustments()
+            extra(project_id,more)
+

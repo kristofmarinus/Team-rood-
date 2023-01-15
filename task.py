@@ -230,25 +230,25 @@ class Task(BaseClass):
         # we handle new records, and updating existing records
         # if id is None: means it's a new task (not previously read from database)
         # so to_db will create a new record (INSERT statement)
-        if self.id is None: 
+        if self._id is None: 
             try:
                 query1 = f'insert into {self._tablename} '
                 query2= f'(task_descr, fk_user_id, fk_project_id, task_date_added, task_deadline, task_progress, task_started_on, task_finished_on) '
                 query3 = f'values '
-                query4 = f'("{self.task_descr}" , {self.fk_user_id} , {self.fk_project_id}, "{self.task_date_added}", "{self.task_deadline}", {self.task_progress},  "{self.task_started_on}", "{self.task_finished_on}");'.replace('"None"', 'Null').replace('None', 'Null')
+                query4 = f'("{self._task_descr}" , {self._fk_user_id} , {self._fk_project_id}, "{self._task_date_added}", "{self._task_deadline}", {self._task_progress},  "{self._task_started_on}", "{self._task_finished_on}");'.replace('"None"', 'Null').replace('None', 'Null')
                 query = query1 + query2 + query3 + query4
                 count = db.cursor.execute(query)
                 db.sqliteConnection.commit()
             except sqlite3.Error as error:
                 print('Error occured - ', error)
         #if ID is not none: means the record most likely CAME from the database or existing record has to be changed. so an UPDATE statement is used
-        if not self.id is None: 
+        if not self._id is None: 
             try:
                 #note: the id is NOT updated
                 query1 = f'update {self._tablename} '
-                query2 = f'set task_descr = "{self.task_descr}", fk_user_id = {self.fk_user_id}, fk_project_id = {self.fk_project_id}, task_date_added = "{self.task_date_added}", '
-                query3 = f'task_deadline = "{self.task_deadline}", task_progress = "{self.task_progress}", task_started_on = "{self.task_started_on}", task_finished_on = "{self.task_finished_on}" '
-                query4 = f'where id = {self.id}'
+                query2 = f'set task_descr = "{self._task_descr}", fk_user_id = {self._fk_user_id}, fk_project_id = {self._fk_project_id}, task_date_added = "{self._task_date_added}", '
+                query3 = f'task_deadline = "{self._task_deadline}", task_progress = "{self._task_progress}", task_started_on = "{self._task_started_on}", task_finished_on = "{self._task_finished_on}" '
+                query4 = f'where id = {self._id}'
                 query_together = query1 + query2 + query3 + query4
                 #cleaning up the query for SQL synstax:
                 query = query_together.replace('"None"', 'Null').replace('None', 'Null')

@@ -1,6 +1,8 @@
 import databaseconnection as db  #database  is made in through db
 import database_functions as dbf
 from task import Task
+from projects import Project
+from users import User
 import inputs
 #import users
 
@@ -9,6 +11,7 @@ import inputs
 # actions users:
 C_ACTION_MENU_USER = 1
 C_ACTION_MENU_TASK = 2
+C_ACTION_MENU_PROJECT = 3
 C_ACTION_MAKE_USER = 1
 C_ACTION_SHOW_USER = 2
 C_ACTION_ADJUST_USER = 3
@@ -17,6 +20,11 @@ C_ACTION_DELETE_USER = 4
 C_ACTION_MAKE_TASK = 1
 C_ACTION_SHOW_TASKS = 2
 C_ACTION_CHANGE_PRINT_OPTIONS = 5
+
+C_ACTION_MAKE_PROJECT = 1
+C_ACTION_SHOW_PROJECTS = 2
+C_ACTION_ADJUST_PROJECT = 3
+C_ACTION_DELETE_PROJECT = 4
 
 C_ACTION_RETURN = 0
 
@@ -35,6 +43,7 @@ def menu_header() -> int:
     # user
     print(f"{C_ACTION_MENU_USER}. Users")
     print(f"{C_ACTION_MENU_TASK}. Tasks")
+    print(f"{C_ACTION_MENU_PROJECT}. Projects")
     print(f'{C_STOP}. Stop program')
     print("-" * 35)
     print("-" * 35)
@@ -60,6 +69,9 @@ def do_menu():
         if choice == C_ACTION_MENU_TASK:
             loop = False
             do_menu_task()
+        if choice == C_ACTION_MENU_PROJECT:
+            loop = False
+            menu_project()
         if choice == C_STOP:
             loop = False
 
@@ -69,11 +81,11 @@ def menu_header_user():
     print("-" * 35)
     print("USER MENU")
     print("")
-    print(f'{C_ACTION_MAKE_USER}. Create users')
-    print(f'{C_ACTION_SHOW_USER}. Show users')
-    print(f'{C_ACTION_ADJUST_USER}. ADJUST/UPDATE users')
+    print(f'{C_ACTION_MAKE_USER}. Create user')
+    print(f'{C_ACTION_SHOW_USER}. Show user')
+    print(f'{C_ACTION_ADJUST_USER}. ADJUST/UPDATE user')
     print("-" * 35)
-    print(f'{C_ACTION_DELETE_USER}. Delete users')
+    print(f'{C_ACTION_DELETE_USER}. Delete user')
     print("-" * 35)
     print(f'{C_ACTION_RETURN}. Return to main menu')
     print("-" * 35)
@@ -146,10 +158,53 @@ def do_menu_task():
             loop = False
 
 
+def menu_header_projects():
+    print("-" * 35)
+    print("-" * 35)
+    print("PROJECT MENU")
+    print("")
+    print(f'{C_ACTION_MAKE_PROJECT}. Create project')
+    print(f'{C_ACTION_SHOW_PROJECTS}. Show project')
+    print(f'{C_ACTION_ADJUST_PROJECT}. ADJUST/UPDATE project')
+    print("-" * 35)
+    print(f'{C_ACTION_DELETE_PROJECT}. Delete project')
+    print("-" * 35)
+    print(f'{C_ACTION_RETURN}. Return to main menu')
+    print("-" * 35)
+    print("-" * 35)
+
+
+def menu_project():
+    """
+    this is
+
+    """
+    menu_header_projects()
+    loop = True
+    while loop:
+        choice = inputs.get_input_item("Choice: ", 3)
+
+        if choice == C_ACTION_MAKE_PROJECT:
+            Project.add_project()
+            menu_header_projects()
+        if choice == C_ACTION_SHOW_PROJECTS:
+            Project.Project.show_projects()
+            menu_header_projects()
+        if choice == C_ACTION_DELETE_PROJECT:
+            Project.delete_project()
+            menu_header_projects()
+        if choice == C_ACTION_ADJUST_PROJECT:
+            Project.adjust_project_run()
+            menu_header_projects()
+        if choice == C_ACTION_RETURN:
+            loop = False
+            do_menu()
+
+
 
 if __name__ == "__main__":
     try:
         db.make_connection()
-        do_menu()#
+        do_menu()
     except Exception as e:
         print(f'something went wrong: {e}')
