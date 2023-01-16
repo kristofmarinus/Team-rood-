@@ -1,72 +1,60 @@
 import databaseconnection as db
 from inputs import get_input_item
 from src import cs50
-import datetime
 import database_functions as dbf
+import sqlite3
 
 class Customer():
+    __customer_name = ""
+    __customer_website = "none"
+    __customer_phone = ""
+    __vat_number = "none"
 
-    _id = ""
-    _name = ""
-    _website = "none"
-    _phone_number = ""
-    _vat_number = "none"
-    _email = "none"
-
-    @property
-    def _name(self):
-        return self._name
-
-    @_name.setter
-    def _name(self, value):
-        if value is not None:
-            self._name = value
+    def __init__(self, customer_name: str):
+        self.__customer_name = customer_name
 
     @property
-    def _website(self):
-        return self._website
+    def customer_name(self):
+        return self.__customer_name
 
-    @_website.setter
-    def _website(self, value):
+    @customer_name.setter
+    def customer_name(self, value):
         if value is not None:
-            self._website = value
+            self.__customer_name = value
 
     @property
-    def _phone_number(self):
-        return self._phone_number
+    def customer_website(self):
+        return self.__customer_website
 
-    @_phone_number.setter
-    def _phone_number(self, value):
+    @customer_website.setter
+    def customer_website(self, value):
         if value is not None:
-            self._phone_number = value
+            self.__customer_website = value
+
+    @property
+    def customer_phone(self):
+        return self.__customer_phone
+
+    @customer_phone.setter
+    def customer_phone(self, value):
+        if value is not None:
+            self.__customer_phone = value
 
     @property
     def vat_number(self):
-        return self._vat_number
+        return self.__vat_number
 
     @vat_number.setter
     def vat_number(self, value):
         if value is not None:
-            self._vat_number = value
-
-    @property
-    def email(self):
-        return self.__email
-
-    @email.setter
-    def email(self, value: str):
-        if "." in value and "@" in value:
-            self.__email = value
-        else:
-            print("invalid email address")
-            self.__email = "n/a"
+            self.__vat_number = value
 
 
     def write_customer(self):
         """writes customer to the database
         """
         try:
-            sql_cmd = f"insert into customers (name, website, phone_number, vat_number, email) values ('{self._name}','{self._website}', '{self._phone_number}', '{self._vat_number}', '{self._email}');"
+            sql_cmd = f"insert into customers (customer_name, customer_website, customer_phone, vat_number) values ('{self.customer_name}','{self.customer_website}', '{self.customer_phone}', '{self.vat_number}');"
             db.cursor.execute(sql_cmd)
             db.sqliteConnection.commit()
         except Exception as e:
@@ -104,7 +92,7 @@ class Customer():
                 db.cursor.execute(sql_cmd)
                 rows = db.cursor.fetchall()
                 print('-' * 50)
-                print('customer ID - name - website - phone_number - vat_number - email')
+                print('customer ID - customer_name - customer_website - customer_phone - vat_number')
                 print('-' * 50)
                 if len(rows) > 0:
                     for row in rows:
@@ -127,14 +115,15 @@ def create_customer() -> Customer:
     Returns:
         Customer: the customer
     """
-    name = get_input_item('Give name')
-    website = get_input_item('Give website')
-    phone_number = get_input_item('Give phone number')
+    customer_name = get_input_item('Give customer name')
+    customer_website = get_input_item('Give customer website')
+    customer_phone = get_input_item('Give customer phone number')
     vat_number = get_input_item('Give vat number')
-    email = get_input_item('Give email')
-    Customer.website = website
-    Customer.email = email
-    return Customer
+    customer = Customer(customer_name, customer_website)
+    customer.website = customer_website
+    customer.phone = customer_phone
+    customer.vat_number = vat_number
+    return customer
 
 
 def add_customer():
@@ -142,7 +131,7 @@ def add_customer():
     adds a customer to the customer list
     """
     customer = create_customer()
-    Customer.write_customer()
+    customer.write_customer()
 
 
 def delete_customer():
@@ -173,7 +162,7 @@ def adjust_customer(db):
             db.cursor.execute(sql_cmd)
             rows = db.cursor.fetchall()
             print('-' * 50)
-            print('customer ID - name - website - phone_number - vat_number - email')
+            print('customer ID - customer_name - customer_website - customer_phone - vat_number')
             print('-' * 50)
             if len(rows) > 0:
                 for row in rows:
@@ -187,7 +176,7 @@ def adjust_customer(db):
         print_all()
 
         # Choose id of the customer
-        user_id = cs50.get_int("Enter the id of the customer: ")
+        customer_id = cs50.get_int("Enter the id of the customer: ")
 
         #cheking if the id of the customer exists
         def id_exists(customer_id):
@@ -222,7 +211,7 @@ def print_selected_customer(customer_id):
     db.cursor.execute("SELECT * FROM customers WHERE id=?", (customer_id,))
     rows = db.cursor.fetchall()
     print('-' * 50)
-    print('customer ID - name - website - phone_number - vat_number - email')
+    print('customer ID - customer_name - customer_website - customer_phone - vat_number')
     print('-' * 50)
     for row in rows:
         print('| ', end='')
@@ -237,18 +226,17 @@ def print_selected_customer(customer_id):
 
 def adjust_row(customer_id):
     # Ask for all the details
-    name = cs50.get_string("Enter the name: ")
-    website = input("Enter the website: ")
-    phone_number = input("Enter the phone number: ")
+    customer_name = cs50.get_string("Enter the customer name: ")
+    customer_website = input("Enter the customer website: ")
+    customer_phone = input("Enter the customer phone number: ")
     vat_number = input("Enter the vat number: ")
-    email = input("Enter the email: ")
 
     # Update the row in the database
     c = db.cursor
-    c.execute("UPDATE customers SET name=?, website=?, phone_number=?, vat_number=?, email=? WHERE id=?",
-              (name, website, phone_number, vat_number, email, customer_id))
+    c.execute("UPDATE customers SET customer_name=?, customer_website=?, customer_phone=?, vat_number=?, WHERE id=?",
+              (customer_name, customer_website, customer_phone, vat_number, customer_id))
     db.sqliteConnection.commit()
-    print("User details updated successfully!")
+    print("Customer details updated successfully!")
 
 
 def adjust_column(customer_id):
@@ -320,10 +308,10 @@ def extra(customer_id,more):
             break
 
 
-def adjust_customer_run(customer_id):
+def adjust_customer_run():
     # Connect to the database
         # Adjust customer details
-        cusotmer_id = adjust_customer(db)
+        customer_id = adjust_customer(db)
         adjust_type_func(customer_id)
         more = more_adjustments()
         extra(customer_id,more)

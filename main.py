@@ -210,16 +210,16 @@ def menu_project():
         choice = inputs.get_input_item("Choice: ", 2)
 
         if choice == C_ACTION_MAKE_PROJECT:
-            Project.add_project()
+            projects.add_project()
             menu_header_projects()
         if choice == C_ACTION_SHOW_PROJECTS:
             projects.Project.show_projects()
             menu_header_projects()
         if choice == C_ACTION_DELETE_PROJECT:
-            Project.delete_project()
+            projects.delete_project()
             menu_header_projects()
         if choice == C_ACTION_ADJUST_PROJECT:
-            Project.adjust_project_run()
+            projects.adjust_project_run()
             menu_header_projects()
         if choice == C_ACTION_RETURN:
             loop = False
