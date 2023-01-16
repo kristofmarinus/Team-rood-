@@ -2,34 +2,41 @@ import databaseconnection as db  #database  is made in through db
 import databaseconnection as db  #database connection is made through db
 import database_functions as dbf
 from task import Task
-<<<<<<< HEAD
 from projects import Project
 from users import User
-=======
-import task
->>>>>>> origin/main
+from customers import Customer
 import inputs
-#import users
 
 
 
-# actions users:
+# main actions:
 C_ACTION_MENU_USER = 1
 C_ACTION_MENU_TASK = 2
 C_ACTION_MENU_PROJECT = 3
+C_ACTION_MENU_CUSTOMER = 4
+
+# actions users:
 C_ACTION_MAKE_USER = 1
 C_ACTION_SHOW_USER = 2
 C_ACTION_ADJUST_USER = 3
 C_ACTION_DELETE_USER = 4
 
+# actions tasks:
 C_ACTION_MAKE_TASK = 1
 C_ACTION_SHOW_TASKS = 2
 C_ACTION_CHANGE_PRINT_OPTIONS = 5
 
+# actions projects:
 C_ACTION_MAKE_PROJECT = 1
 C_ACTION_SHOW_PROJECTS = 2
 C_ACTION_ADJUST_PROJECT = 3
 C_ACTION_DELETE_PROJECT = 4
+
+# actions customers:
+C_ACTION_MAKE_CUSTOMER = 1
+C_ACTION_SHOW_CUSTOMERS = 2
+C_ACTION_ADJUST_CUSTOMER = 3
+C_ACTION_DELETE_CUSTOMER = 4
 
 C_ACTION_RETURN = 0
 
@@ -49,6 +56,7 @@ def menu_header() -> int:
     print(f"{C_ACTION_MENU_USER}. Users")
     print(f"{C_ACTION_MENU_TASK}. Tasks")
     print(f"{C_ACTION_MENU_PROJECT}. Projects")
+    print(f"{C_ACTION_MENU_CUSTOMER}. Customers")
     print(f'{C_STOP}. Stop program')
     print("-" * 35)
     print("-" * 35)
@@ -77,6 +85,9 @@ def do_menu():
         if choice == C_ACTION_MENU_PROJECT:
             loop = False
             menu_project()
+        if choice == C_ACTION_MENU_CUSTOMER:
+            loop = False
+            menu_customer()
         if choice == C_STOP:
             loop = False
 
@@ -108,16 +119,16 @@ def menu_user():
         choice = inputs.get_input_item("Choice: ", 1)
 
         if choice == C_ACTION_MAKE_USER:
-            users.add_user()
+            User.add_user()
             menu_header_user()
         if choice == C_ACTION_SHOW_USER:
-            users.User.show_users()
+            User.User.show_users()
             menu_header_user()
         if choice == C_ACTION_DELETE_USER:
-            users.delete_user()
+            User.delete_user()
             menu_header_user()
         if choice == C_ACTION_ADJUST_USER:
-            users.adjust_user_run()
+            User.adjust_user_run()
             menu_header_user()
         if choice == C_ACTION_RETURN:
             loop = False
@@ -156,7 +167,7 @@ def do_menu_task():
         if choice == C_ACTION_MAKE_TASK:
             pass #aanvulllen!
             loop = False
-            task.create_task()
+            Task.create_task()
             do_menu_task()
         if choice == C_ACTION_SHOW_TASKS:
             dbf.print_table("tasks", dbf.give_table_filtered("tasks"))
@@ -178,7 +189,7 @@ def menu_header_projects():
     print("PROJECT MENU")
     print("")
     print(f'{C_ACTION_MAKE_PROJECT}. Create project')
-    print(f'{C_ACTION_SHOW_PROJECTS}. Show project')
+    print(f'{C_ACTION_SHOW_PROJECTS}. Show projects')
     print(f'{C_ACTION_ADJUST_PROJECT}. ADJUST/UPDATE project')
     print("-" * 35)
     print(f'{C_ACTION_DELETE_PROJECT}. Delete project')
@@ -210,6 +221,48 @@ def menu_project():
         if choice == C_ACTION_ADJUST_PROJECT:
             Project.adjust_project_run()
             menu_header_projects()
+        if choice == C_ACTION_RETURN:
+            loop = False
+            do_menu()
+
+def menu_header_customers():
+    print("-" * 35)
+    print("-" * 35)
+    print("CUSTOMER MENU")
+    print("")
+    print(f'{C_ACTION_MAKE_CUSTOMER}. Create customer')
+    print(f'{C_ACTION_SHOW_CUSTOMERS}. Show customers')
+    print(f'{C_ACTION_ADJUST_CUSTOMER}. ADJUST/UPDATE customer')
+    print("-" * 35)
+    print(f'{C_ACTION_DELETE_CUSTOMER}. Delete customer')
+    print("-" * 35)
+    print(f'{C_ACTION_RETURN}. Return to main menu')
+    print("-" * 35)
+    print("-" * 35)
+
+
+def menu_customer():
+    """
+    this is
+
+    """
+    menu_header_customers()
+    loop = True
+    while loop:
+        choice = inputs.get_input_item("Choice: ", 4)
+
+        if choice == C_ACTION_MAKE_CUSTOMER:
+            Customer.add_customer()
+            menu_header_customers()
+        if choice == C_ACTION_SHOW_CUSTOMERS:
+            Customer.Customer.show_customers()
+            menu_header_customers()
+        if choice == C_ACTION_DELETE_CUSTOMER:
+            Customer.delete_customer()
+            menu_header_customers()
+        if choice == C_ACTION_ADJUST_CUSTOMER:
+            Customer.adjust_customer_run()
+            menu_header_customers()
         if choice == C_ACTION_RETURN:
             loop = False
             do_menu()
