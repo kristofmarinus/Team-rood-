@@ -22,7 +22,6 @@ def get_input_item(text: str, result_type:int = 0) -> any:
 
     return result
 
-
 def get_int(text):
     """
     gets int , if not integer given it will keep asking without crashing
@@ -37,4 +36,3 @@ def get_int(text):
             return inp
         else:
             continue
-

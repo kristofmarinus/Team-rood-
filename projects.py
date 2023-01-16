@@ -4,6 +4,7 @@ from src import cs50
 import datetime
 import database_functions as dbf
 
+
 class Project():
     _id = ""
     _project_name = ""
@@ -44,7 +45,6 @@ class Project():
                 self._project_descr = str(value)
             except: 
                 raise TypeError('project_descr has to be a string, or a type that can be converted to a string')
-
 
     @property
     def fk_customer_id(self) -> int:
