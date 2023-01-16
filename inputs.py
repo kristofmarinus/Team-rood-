@@ -21,3 +21,19 @@ def get_input_item(text: str, result_type:int = 0) -> any:
         result = 0
 
     return result
+
+
+def get_int(text):
+    """
+    gets int , if not integer given it will keep asking without crashing
+    :param text:
+    :return:
+    """
+    n = 0
+    while n == 0:
+        inp = input(f'{text}')
+        if inp.isdigit():
+            n += 1
+            return inp
+        else:
+            continue
