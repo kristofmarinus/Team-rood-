@@ -3,9 +3,9 @@ import databaseconnection as db  #database connection is made through db
 import database_functions as dbf
 from task import Task
 from projects import Project
-from users import User
-from customers import Customer
+import users
 import inputs
+from customers import Customer
 
 
 
@@ -97,11 +97,11 @@ def menu_header_user():
     print("-" * 35)
     print("USER MENU")
     print("")
-    print(f'{C_ACTION_MAKE_USER}. Create user')
-    print(f'{C_ACTION_SHOW_USER}. Show user')
-    print(f'{C_ACTION_ADJUST_USER}. ADJUST/UPDATE user')
+    print(f'{C_ACTION_MAKE_USER}. Create users')
+    print(f'{C_ACTION_SHOW_USER}. Show users')
+    print(f'{C_ACTION_ADJUST_USER}. ADJUST/UPDATE users')
     print("-" * 35)
-    print(f'{C_ACTION_DELETE_USER}. Delete user')
+    print(f'{C_ACTION_DELETE_USER}. Delete users')
     print("-" * 35)
     print(f'{C_ACTION_RETURN}. Return to main menu')
     print("-" * 35)
@@ -119,20 +119,21 @@ def menu_user():
         choice = inputs.get_input_item("Choice: ", 1)
 
         if choice == C_ACTION_MAKE_USER:
-            User.add_user()
+            users.add_user()
             menu_header_user()
         if choice == C_ACTION_SHOW_USER:
-            User.User.show_users()
+            users.User.show_users()
             menu_header_user()
         if choice == C_ACTION_DELETE_USER:
-            User.delete_user()
+            users.delete_user()
             menu_header_user()
         if choice == C_ACTION_ADJUST_USER:
-            User.adjust_user_run()
+            users.adjust_user_run()
             menu_header_user()
         if choice == C_ACTION_RETURN:
             loop = False
             do_menu()
+
 
 
 def menu_header_task()->int: 
