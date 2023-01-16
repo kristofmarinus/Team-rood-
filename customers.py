@@ -10,8 +10,9 @@ class Customer():
     __customer_phone = ""
     __vat_number = "none"
 
-    def __init__(self, customer_name: str):
+    def __init__(self, customer_name: str, customer_phone : str):
         self.__customer_name = customer_name
+        self.__customer_phone = customer_phone
 
     @property
     def customer_name(self):
@@ -119,9 +120,8 @@ def create_customer() -> Customer:
     customer_website = get_input_item('Give customer website')
     customer_phone = get_input_item('Give customer phone number')
     vat_number = get_input_item('Give vat number')
-    customer = Customer(customer_name, customer_website)
+    customer = Customer(customer_name, customer_phone)
     customer.website = customer_website
-    customer.phone = customer_phone
     customer.vat_number = vat_number
     return customer
 

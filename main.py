@@ -252,13 +252,13 @@ def menu_customer():
         choice = inputs.get_input_item("Choice: ", 2)
 
         if choice == C_ACTION_MAKE_CUSTOMER:
-            customers.Customer.add_customer()
+            customers.add_customer()
             menu_header_customers()
         if choice == C_ACTION_SHOW_CUSTOMERS:
             customers.Customer.show_customers()
             menu_header_customers()
         if choice == C_ACTION_DELETE_CUSTOMER:
-            customers.Customer.delete_customer()
+            customers.delete_customer()
             menu_header_customers()
         if choice == C_ACTION_ADJUST_CUSTOMER:
             customers.adjust_customer_run()
