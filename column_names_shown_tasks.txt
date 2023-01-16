@@ -2,4 +2,5 @@ id
 task_descr
 fk_project_id
 fk_user_id
-task_date_added
+task_progress
+task_deadline
