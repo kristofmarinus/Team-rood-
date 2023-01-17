@@ -237,7 +237,7 @@ class Task(BaseClass):
                 query1 = f'insert into {self._tablename} '
                 query2= f'(task_descr, fk_user_id, fk_project_id, task_date_added, task_deadline, task_progress, task_started_on, task_finished_on) '
                 query3 = f'values '
-                query4 = f'("{self._task_descr}" , {self._fk_user_id} , {self._fk_project_id}, "{self._task_date_added}", "{self._task_deadline}", {self._task_progress},  "{self._task_started_on}", "{self._task_finished_on}");'.replace('"None"', 'Null').replace('None', 'Null')
+                query4 = f'("{self._task_descr}" , {self._fk_user_id} , {self._fk_project_id}, "{self.task_date_added}", "{self.task_deadline}", {self._task_progress},  "{self.task_started_on}", "{self.task_finished_on}");'.replace('"None"', 'Null').replace('None', 'Null')
                 query = query1 + query2 + query3 + query4
                 count = db.cursor.execute(query)
                 db.sqliteConnection.commit()
@@ -248,8 +248,8 @@ class Task(BaseClass):
             try:
                 #note: the id is NOT updated
                 query1 = f'update {self._tablename} '
-                query2 = f'set task_descr = "{self._task_descr}", fk_user_id = {self._fk_user_id}, fk_project_id = {self._fk_project_id}, task_date_added = "{self._task_date_added}", '
-                query3 = f'task_deadline = "{self._task_deadline}", task_progress = "{self._task_progress}", task_started_on = "{self._task_started_on}", task_finished_on = "{self._task_finished_on}" '
+                query2 = f'set task_descr = "{self._task_descr}", fk_user_id = {self._fk_user_id}, fk_project_id = {self._fk_project_id}, task_date_added = "{self.task_date_added}", '
+                query3 = f'task_deadline = "{self.task_deadline}", task_progress = "{self.task_progress}", task_started_on = "{self.task_started_on}", task_finished_on = "{self.task_finished_on}" '
                 query4 = f'where id = {self._id}'
                 query_together = query1 + query2 + query3 + query4
                 #cleaning up the query for SQL synstax:
@@ -318,7 +318,7 @@ def create_task():
         if input_dialog == "yes":
             input_deadline = get_input('Please give the deadline in format: YYYY/MM/DD: ')
             try: 
-                new_task = new_task.str_to_date(input_deadline)
+                new_task.task_deadline = new_task.str_to_date(input_deadline)
                 break
             except: 
                 print('date format was incorrect! please use YYYY/MM/DD')
@@ -331,6 +331,187 @@ def create_task():
         else: 
             print('invalid input... please try again. ')
 
+
+def select_task():
+    #print table with all the tasks: 
+    print("SELECT A TASK:")
+    print("These are all the tasks: ")
+    dbf.print_table("tasks", dbf.give_table_filtered("tasks"))
+    #get user input: 
+    while True: 
+        task_choice = get_input('type the ID of the task you want to choose: ', 1)
+        #test if user input is in the list of tasks: 
+        list_task_id = dbf.give_id_table('tasks')
+        print("task choice", task_choice)
+        print(list_task_id)
+        if task_choice in list_task_id:
+            chosen_task = Task()
+            chosen_task.from_db = task_choice
+            return chosen_task
+        else: 
+            print("invalid id... please choose an id from the list! ")
+
+
+def change_task():
+    print("CHANGE A TASK:")
+    #select the task:
+    task = select_task()
+    print("the task you want to change: ")
+    #print the entire record (so all columns, not the "filtered" list)
+    dbf.print_record("tasks", dbf.give_record("tasks", task.id), [], False, False)
+    # we loop through all the parameters and ask if the user wants to change them: 
+    # (task ID, task date_added and task date_changed can not be changed manualy by user)
+    #change description
+    while True: 
+        input_dialog = get_input("Do you want to change the task description? Y/N: ").lower().strip()
+        if input_dialog == "n":
+            break
+        if input_dialog == "y":
+            new_value = get_input('Give the new description: ')
+            #handle the validition by using the setter
+            try:
+                task.task_descr = new_value
+                break
+            except Exception as e:
+                print(f'input is in wrong format. Exception: {e}')
+    #change project_id
+    while True: 
+        input_dialog = get_input("Do you want to change the project ID? Y/N: ").lower().strip()
+        if input_dialog == "n":
+            break
+        if input_dialog == "y":
+            #print the table of all projects: 
+            print("this is a list of all the projects: ")
+            dbf.print_table('projects', dbf.give_table_filtered('projects'))
+            #get input: 
+            new_value = get_input('Give the new project ID: ',1)
+            #test that the input is a project id: 
+            list_project_id = dbf.give_id_table('projects')
+            if new_value in list_project_id: 
+                #handle the validition by using the setter
+                try:
+                    task.fk_project_id = new_value
+                    break
+                except Exception as e:
+                    print(f'input is in wrong format. Exception: {e}')
+            else:
+                print('that is not a valid project ID, please choose one from the list')
+    #change user_id (None value is allowed)
+    while True: 
+        input_dialog = get_input("Do you want to change the user_id? Y/N: ").lower().strip()
+        if input_dialog == "n":
+            break
+        if input_dialog == "y":
+            #print the table of all users: 
+            print("this is a list of all the users: ")
+            dbf.print_table('users', dbf.give_table_filtered('users'))
+            #get input: 
+            new_value = get_input('Give the new project ID or give "0" for "None": ',1)  
+            #get list containing all user id's
+            list_id = dbf.give_id_table('users')          
+            #if input is "0", set to None:
+            if new_value == 0:
+                task.fk_user_id = None
+                break
+            #test that the input is a user id: 
+            elif new_value in list_id: 
+                #handle the validition by using the setter
+                try:
+                    task.fk_user_id = new_value
+                    break
+                except Exception as e:
+                    print(f'input is in wrong format. Exception: {e}')
+            else:
+                print('that is not a valid user ID, please choose one from the list')
+    #change task deadline (None value is allowed)
+    while True: 
+        input_dialog = get_input("Do you want to change the task deadline? Y/N: ").lower().strip()
+        if input_dialog == "n":
+            break
+        if input_dialog == "y":
+            new_value = get_input('Give the new deadline in format YYYY/MM/DD or type "None" for None: ')
+            
+            if new_value.lower().strip() == "none":
+                try: 
+                    task.task_deadline = None
+                    break
+                except Exception as e: 
+                    print(f'error setting task deadline to None. Exception: {e}') 
+            else: 
+                #handle the validition by using the setter
+                try:
+                    task.task_deadline = new_value
+                    break
+                except Exception as e:
+                    print(f'input is in wrong format. Exception: {e}')    
+    #change task progress (None value is allowed)
+    while True: 
+        input_dialog = get_input("Do you want to change the task progress? Y/N: ").lower().strip()
+        if input_dialog == "n":
+            break
+        if input_dialog == "y":
+            new_value = get_input('Give the new task progress (number between 0 and 100) or type "None" for None: ').lower().strip()
+            #handle the validition by using the setter
+            if new_value == 'null':
+                task.task_progress = None
+                break
+            else:
+                try:
+                    task.task_progress = new_value
+                    break
+                except Exception as e:
+                    print(f'input is in wrong format. Exception: {e}')   
+    #change task started_on date (None value is allowed)
+    while True: 
+        input_dialog = get_input("Do you want to change the task started_on date? Y/N: ").lower().strip()
+        if input_dialog == "n":
+            break
+        if input_dialog == "y":
+            new_value = get_input('Give the new task started_on date in format YYYY/MM/DD or type "None" for None: ')            
+            if new_value.lower().strip() == "none":
+                try: 
+                    task.task_started_on = None
+                    break
+                except Exception as e: 
+                    print(f'error setting task started_on to None. Exception: {e}') 
+            else: 
+                #handle the validition by using the setter
+                try:
+                    task.task_started_on = new_value
+                    break
+                except Exception as e:
+                    print(f'input is in wrong format. Exception: {e}')    
+    #change task finished_on date (None value is allowed)
+    while True: 
+        input_dialog = get_input("Do you want to change the task finished_on date? Y/N: ").lower().strip()
+        if input_dialog == "n":
+            break
+        if input_dialog == "y":
+            new_value = get_input('Give the new task finished_on date in format YYYY/MM/DD or type "None" for None: ')            
+            if new_value.lower().strip() == "none":
+                try: 
+                    task.task_finished_on = None
+                    break
+                except Exception as e: 
+                    print(f'error setting task finished_on to None. Exception: {e}') 
+            else: 
+                #handle the validition by using the setter
+                try:
+                    task.task_finished_on = new_value
+                    break
+                except Exception as e:
+                    print(f'input is in wrong format. Exception: {e}')    
+    #input stage is complete... now we ask the user if he wants to save the changes or not?
+    while True:
+        input_user = get_input("you have finished the input for change-task... do you want to save the changes? YES/NO: ").lower().strip()
+        if input_user == 'no':
+            break
+        elif input_user == 'yes':
+            task.to_db()
+            break
+
+        
+
     
                     
 
@@ -341,7 +522,8 @@ def create_task():
 # funtion to CHANGE a task (like assign user)
 # should be two functions: get input + change task
 def main():
-    create_task()
+    change_task()
+
    
 
 

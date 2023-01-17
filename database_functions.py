@@ -64,12 +64,18 @@ def print_record(tablename:str, result:list, list_justify = [], no_columnames = 
         no_columnames (bool, optional): set this to True when printing multiple records (like a table). Defaults to False.
     """
     if len(list_justify) == 0:
-        list_justify = get_justify_values(tablename, result)
+        if filtered == True: 
+            list_justify = get_justify_values(tablename, result)
+        elif filtered == False:
+            list_justify = get_justify_values("tasks", result, False)
     number_colums = len(result[0])
 
     if no_columnames == False: 
         #get and print the columnames:
-        string_record = give_string_columnames(tablename, list_justify)
+        if filtered == True:
+            string_record = give_string_columnames(tablename, list_justify)
+        if filtered == False: 
+            string_record = give_string_columnames(tablename, list_justify, False)
         print(string_record)
     #iterete over the list "result" and compile the string that gets printed: 
     string_record = ''

@@ -1,7 +1,7 @@
 import databaseconnection as db  #database  is made in through db
 import databaseconnection as db  #database connection is made through db
 import database_functions as dbf
-from task import Task
+import task
 from projects import Project
 import users
 import inputs
@@ -139,7 +139,6 @@ def menu_user():
 def menu_header_task()->int: 
     print("-" * 35)
     print("-" * 35)
-    print("USER MENU")
     print("TASK MENU")
     print("")
     print(f'{C_ACTION_RETURN}. Return to main menu')
@@ -168,7 +167,7 @@ def do_menu_task():
         if choice == C_ACTION_MAKE_TASK:
             pass #aanvulllen!
             loop = False
-            Task.create_task()
+            task.create_task()
             do_menu_task()
         if choice == C_ACTION_SHOW_TASKS:
             dbf.print_table("tasks", dbf.give_table_filtered("tasks"))
