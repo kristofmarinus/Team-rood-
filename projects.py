@@ -4,9 +4,10 @@ from src import cs50
 import datetime
 import database_functions as dbf
 import sqlite3
+from baseclass import BaseClass
 
 
-class Project():
+class Project(BaseClass):
     __project_name = ""
     __project_descr = ""
     __fk_customer_id = ""
@@ -110,18 +111,17 @@ class Project():
             raise TypeError('date is in wrong type')
 
     @property
-    def project_finished(self) -> str:
+    def project_finished(self):
         return self.__project_finished
 
     @project_finished.setter
     def project_finished(self, value):
         try:
-            self.__project_finished = str(value)
+            self.__project_finished = (value)
         except: 
             raise TypeError('project_finished has to be a string, or a type that can be converted to a string')
 
 
-    @property
     def write_project(self):
         """writes project to the database
         """
@@ -202,11 +202,11 @@ def create_project() -> Project:
 
 
 def add_project():
-        """
-        adds a project to the projects list
-        """
-        project = create_project()
-        project.write_project()
+    """
+    adds a project to the projects list
+    """
+    project = create_project()
+    project.write_project()
 
 
 def delete_project():
