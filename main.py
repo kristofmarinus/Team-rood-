@@ -2,11 +2,10 @@ import databaseconnection as db  #database  is made in through db
 import databaseconnection as db  #database connection is made through db
 import database_functions as dbf
 import task
-from projects import Project
+import projects
 import users
 import inputs
-from customers import Customer
-
+import customers
 
 
 # main actions:
@@ -136,7 +135,7 @@ def menu_user():
 
 
 
-def menu_header_task()->int: 
+def menu_header_task()->int:
     print("-" * 35)
     print("-" * 35)
     print("TASK MENU")
@@ -160,12 +159,13 @@ def menu_header_task()->int:
         choice = menu_header()
     return choice
 
+
 def do_menu_task():
     loop = True
     while loop:
         choice = menu_header_task()
         if choice == C_ACTION_MAKE_TASK:
-            pass #aanvulllen!
+            #pass #aanvulllen!
             loop = False
             task.create_task()
             do_menu_task()
@@ -173,14 +173,13 @@ def do_menu_task():
             dbf.print_table("tasks", dbf.give_table_filtered("tasks"))
         if choice == C_ACTION_RETURN:
             loop = False
-            do_menu()          
+            do_menu()
         if choice == C_ACTION_CHANGE_PRINT_OPTIONS:
             dbf.do_menu_toggle('tasks')
             do_menu_task()
 
 
             loop = False
-           
 
 
 def menu_header_projects():
@@ -207,19 +206,19 @@ def menu_project():
     menu_header_projects()
     loop = True
     while loop:
-        choice = inputs.get_input_item("Choice: ", 3)
+        choice = inputs.get_input_item("Choice: ", 2)
 
         if choice == C_ACTION_MAKE_PROJECT:
-            Project.add_project()
+            projects.add_project()
             menu_header_projects()
         if choice == C_ACTION_SHOW_PROJECTS:
-            Project.Project.show_projects()
+            projects.Project.show_projects()
             menu_header_projects()
         if choice == C_ACTION_DELETE_PROJECT:
-            Project.delete_project()
+            projects.delete_project()
             menu_header_projects()
         if choice == C_ACTION_ADJUST_PROJECT:
-            Project.adjust_project_run()
+            projects.adjust_project_run()
             menu_header_projects()
         if choice == C_ACTION_RETURN:
             loop = False
@@ -249,19 +248,19 @@ def menu_customer():
     menu_header_customers()
     loop = True
     while loop:
-        choice = inputs.get_input_item("Choice: ", 4)
+        choice = inputs.get_input_item("Choice: ", 2)
 
         if choice == C_ACTION_MAKE_CUSTOMER:
-            Customer.add_customer()
+            customers.add_customer()
             menu_header_customers()
         if choice == C_ACTION_SHOW_CUSTOMERS:
-            Customer.Customer.show_customers()
+            customers.Customer.show_customers()
             menu_header_customers()
         if choice == C_ACTION_DELETE_CUSTOMER:
-            Customer.delete_customer()
+            customers.delete_customer()
             menu_header_customers()
         if choice == C_ACTION_ADJUST_CUSTOMER:
-            Customer.adjust_customer_run()
+            customers.adjust_customer_run()
             menu_header_customers()
         if choice == C_ACTION_RETURN:
             loop = False
