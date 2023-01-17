@@ -228,7 +228,10 @@ class Task(BaseClass):
         except Exception as e:
             print(f'error in module from_db : {e}')
 
+
     def to_db(self):
+        """writes a task to DB. (SQL update for existing, changed, task and SQL insert for a new task)
+        """
         # we handle new records, and updating existing records
         # if id is None: means it's a new task (not previously read from database)
         # so to_db will create a new record (INSERT statement)
@@ -260,16 +263,30 @@ class Task(BaseClass):
                 print('Error occured - ', error)
 
 
+    def delete(self):
+        """handles deleting a task"""
+        try:
+            sql_cmd = f'delete from tasks where id = {self.id};'
+            db.cursor.execute(sql_cmd)
+            db.sqliteConnection.commit()
+            print('Task deleted')
+        except Exception as e:
+            print(f'error deleting task: {e}')
+
+
     def __str__(self):
         return self.__dict__()
 
 
 
 def create_task():
+    """handles user creating a new task. does not ask for EVERY attribute, only the "basic" ones. User can edit the task later. 
+    """
     print('Creating a new task! Please give the required info: ')
+    #initialize a new (empty) task instance
     new_task = Task()
     new_task.task_descr = input('please give the task description: ')
-    #get project_id for the task (project is can not be None): 
+    #get project_id for the task (project_id can not be None): 
     while True: 
         print('A task has to be assigned to a project. Here is the list of projects: ')
         #print the table of all projects: 
@@ -326,26 +343,33 @@ def create_task():
     while True: 
         input_dialog = get_input('you have completed the input for this task. Do you want to save it? YES/NO: ').lower().strip()
         if input_dialog == 'yes':
+            #save to database
             new_task.to_db()
+            break
+        elif input_dialog == 'no':
             break
         else: 
             print('invalid input... please try again. ')
 
 
-def select_task():
+def select_task()->Task:
+    """handles user selecting a task
+
+    Returns:
+        Task: the task the user selected
+    """
     #print table with all the tasks: 
     print("SELECT A TASK:")
     print("These are all the tasks: ")
     dbf.print_table("tasks", dbf.give_table_filtered("tasks"))
     #get user input: 
     while True: 
-        task_choice = get_input('type the ID of the task you want to choose: ', 1)
+        task_choice = get_input('give the ID of the task you choose: ', 1)
         #test if user input is in the list of tasks: 
         list_task_id = dbf.give_id_table('tasks')
-        print("task choice", task_choice)
-        print(list_task_id)
         if task_choice in list_task_id:
             chosen_task = Task()
+            #get property values from database
             chosen_task.from_db = task_choice
             return chosen_task
         else: 
@@ -353,6 +377,8 @@ def select_task():
 
 
 def change_task():
+    """handles user changing a task
+    """
     print("CHANGE A TASK:")
     #select the task:
     task = select_task()
@@ -360,7 +386,7 @@ def change_task():
     #print the entire record (so all columns, not the "filtered" list)
     dbf.print_record("tasks", dbf.give_record("tasks", task.id), [], False, False)
     # we loop through all the parameters and ask if the user wants to change them: 
-    # (task ID, task date_added and task date_changed can not be changed manualy by user)
+    # (task ID, task date_added and task date_changed can not be changed manualy by user)d
     #change description
     while True: 
         input_dialog = get_input("Do you want to change the task description? Y/N: ").lower().strip()
@@ -388,7 +414,7 @@ def change_task():
             #test that the input is a project id: 
             list_project_id = dbf.give_id_table('projects')
             if new_value in list_project_id: 
-                #handle the validition by using the setter
+                #handle the validation by using the setter
                 try:
                     task.fk_project_id = new_value
                     break
@@ -415,7 +441,7 @@ def change_task():
                 break
             #test that the input is a user id: 
             elif new_value in list_id: 
-                #handle the validition by using the setter
+                #handle the validation by using the setter
                 try:
                     task.fk_user_id = new_value
                     break
@@ -438,7 +464,7 @@ def change_task():
                 except Exception as e: 
                     print(f'error setting task deadline to None. Exception: {e}') 
             else: 
-                #handle the validition by using the setter
+                #handle the validation by using the setter
                 try:
                     task.task_deadline = new_value
                     break
@@ -451,7 +477,7 @@ def change_task():
             break
         if input_dialog == "y":
             new_value = get_input('Give the new task progress (number between 0 and 100) or type "None" for None: ').lower().strip()
-            #handle the validition by using the setter
+            #handle the validation by using the setter
             if new_value == 'null':
                 task.task_progress = None
                 break
@@ -507,25 +533,39 @@ def change_task():
         if input_user == 'no':
             break
         elif input_user == 'yes':
+            #write task to database:
             task.to_db()
             break
 
-        
 
-    
+def delete_task():
+    """handles deleting a task from database. calls self.delete() after a user dialog to select the task
+    """
+    print("DELETE A TASK:")
+    print("SELECT A TASK TO DELETE:")
+    task_delete = select_task()
+    print("the task you selected to delete is: ")
+    #print the entire record (so all columns, not the "filtered" list)
+    dbf.print_record("tasks", dbf.give_record("tasks", task_delete.id), [], False, False)
+    while True: 
+        are_you_sure = get_input("are you sure you want to delete this task? YES/NO: ").lower().strip()
+        if are_you_sure == "no":
+            break
+        elif are_you_sure == "yes":            
+            try:
+                #delete the task
+                task_delete.delete()
+                break
+            except Exception as e:
+                print(f'fout: {e}')
+                break
+        else: 
+            print("invalid input... please ty again... ")
+        
                     
 
-
-
-
-
-# funtion to CHANGE a task (like assign user)
-# should be two functions: get input + change task
 def main():
-    change_task()
-
-   
-
+    pass
 
 
 if __name__ == '__main__':

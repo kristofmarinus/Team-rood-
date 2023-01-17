@@ -23,6 +23,8 @@ C_ACTION_DELETE_USER = 4
 # actions tasks:
 C_ACTION_MAKE_TASK = 1
 C_ACTION_SHOW_TASKS = 2
+C_ACTION_ADJUST_TASK = 3
+C_ACTION_DELETE_TASK = 4
 C_ACTION_CHANGE_PRINT_OPTIONS = 5
 
 # actions projects:
@@ -143,14 +145,11 @@ def menu_header_task()->int:
     print(f'{C_ACTION_RETURN}. Return to main menu')
     print(f'{C_ACTION_MAKE_TASK}. Create task')
     print(f'{C_ACTION_SHOW_TASKS}. Show tasks')
-    ##print(f'{C_ACTION_ADJUST_USER}. ADJUST/UPDATE users')
-    #print("-" * 35)
-    #print(f'{C_ACTION_DELETE_USER}. Delete users')
-    #print("-" * 35)
-    #print(f'{C_ACTION_RETURN}. Return to main menu')
+    print(f'{C_ACTION_ADJUST_TASK}. Change task')
+    print(f'{C_ACTION_DELETE_TASK}. Delete task')
     print(f'{C_ACTION_CHANGE_PRINT_OPTIONS}. Change display options for tables/records')
-    #print("-" * 35)
-    #print("-" * 35)
+    print("-" * 35)
+    print("-" * 35)
     try:
         print("")
         choice = int(input("Make your choice: "))
@@ -165,10 +164,7 @@ def do_menu_task():
     while loop:
         choice = menu_header_task()
         if choice == C_ACTION_MAKE_TASK:
-            #pass #aanvulllen!
-            loop = False
             task.create_task()
-            do_menu_task()
         if choice == C_ACTION_SHOW_TASKS:
             dbf.print_table("tasks", dbf.give_table_filtered("tasks"))
         if choice == C_ACTION_RETURN:
@@ -176,10 +172,11 @@ def do_menu_task():
             do_menu()
         if choice == C_ACTION_CHANGE_PRINT_OPTIONS:
             dbf.do_menu_toggle('tasks')
-            do_menu_task()
+        if choice == C_ACTION_ADJUST_TASK:
+            task.change_task()
+        if choice == C_ACTION_DELETE_TASK:
+            task.delete_task()
 
-
-            loop = False
 
 
 def menu_header_projects():

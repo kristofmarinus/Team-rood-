@@ -2,15 +2,22 @@ import databaseconnection as db
 from inputs import get_input_item
 
 class User():
+    __id = ""
     __firstname = ""
     __lastname = ""
     __fullname = ""
     __email = "none"
     __website = "none"
 
-    def __init__(self, firstname: str, lastname: str):
-        self.__firstname = firstname
-        self.__lastname = lastname
+
+
+    @property
+    def id(self):
+        return self.__id
+
+    @id.setter
+    def id(self, value):
+        self.__id = value
 
     @property
     def firstname(self):
@@ -115,6 +122,7 @@ class User():
         show_users_2(project_id)
 
 
+
 def create_user() -> User:
     """
 
@@ -127,7 +135,9 @@ def create_user() -> User:
     lastname = get_input_item('Give last name')
     email = get_input_item('Give email')
     website = get_input_item('Give website')
-    user = User(firstname, lastname)
+    user = User()
+    user.firstname = firstname
+    user.lastname = lastname
     user.email = email
     user.website = website
     return user
@@ -327,6 +337,13 @@ def adjust_user_run():
         extra(user_id,more)
 
 
+
+def main():
+    pass
+
+
+if __name__ == '__main__':
+    main()
 
 
 #1 error cant fix: after making mistake of choosing the users to adjust,
