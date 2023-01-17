@@ -233,7 +233,7 @@ def adjust_row(customer_id):
 
     # Update the row in the database
     c = db.cursor
-    c.execute("UPDATE customers SET customer_name=?, customer_website=?, customer_phone=?, vat_number=?, WHERE id=?",
+    c.execute("UPDATE customers SET customer_name=?, customer_website=?, customer_phone=?, vat_number=? WHERE id=?",
               (customer_name, customer_website, customer_phone, vat_number, customer_id))
     db.sqliteConnection.commit()
     print("Customer details updated successfully!")
