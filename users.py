@@ -1,6 +1,5 @@
 import databaseconnection as db
-from inputs import get_input_item
-from src import cs50
+import inputs
 import database_functions as dbf
 
 
@@ -190,7 +189,7 @@ def adjust_user(db):
         print_all()
 
         # Choose id of the user
-        user_id = cs50.get_int("Enter the id of the user: ")
+        user_id =get_int("Enter the id of the user: ")
 
         #cheking if the id of the user exists
         def id_exists(user_id):
@@ -240,8 +239,8 @@ def print_selected_user(user_id):
 
 def adjust_row(user_id):
     # Ask for all the details
-    fname = cs50.get_string("Enter the first name: ")
-    lname = cs50.get_string("Enter the last name: ")
+    fname = get_input_item("Enter the first name: ")
+    lname = get_input_item("Enter the last name: ")
     email = input("Enter the email: ")
     website = input("Enter the website: ")
 
@@ -287,7 +286,7 @@ def adjust_type_func(user_id):
             # Do you want to adjust whole row or specific column
     :return: row or column
     """
-    adjust_type = cs50.get_int("Choose what do you want to adjust:"
+    adjust_type = get_int("Choose what do you want to adjust:"
                                "\n1.whole row "
                                "\n2.specific column "
                                "\nChoose: ")
@@ -308,7 +307,7 @@ def adjust_type_func(user_id):
             adjust_type_func(user_id)
 
 def more_adjustments():
-    more = cs50.get_int(
+    more = get_int(
         ("Do you want to "
          "\n1. adjust row/column of the same user  "
          "\n2. choose another user  "
@@ -346,8 +345,8 @@ def adjust_user_run():
 # we choose specific column and PRINTING does not show the information about user.
 
 
-#make maybe custom get_email function? in library cs50?
-#make maybe custom get_website function? in library cs50?
+#make maybe custom get_email function? in library ?
+#make maybe custom get_website function? in library ?
 
 
 
