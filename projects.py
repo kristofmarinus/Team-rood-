@@ -5,6 +5,7 @@ import datetime
 import database_functions as dbf
 import sqlite3
 from baseclass import BaseClass
+from get_input import get_input
 
 
 class Project(BaseClass):
@@ -15,9 +16,6 @@ class Project(BaseClass):
     __project_deadline = ""
     __project_finished = "none"
 
-    def __init__(self, project_name: str, project_descr: str):
-        self.__project_name = project_name
-        self.__project_descr = project_descr
 
     @property
     def project_name(self) -> str:
@@ -187,18 +185,41 @@ def create_project() -> Project:
     Returns:
         Project: the project
     """
-    project_name = get_input_item('Give project name: ')
-    project_descr = get_input_item('Give project description: ')
-    fk_customer_id = get_input_item('Give customer id: ')
-    project_date_added = get_input_item('Give date when project was added: ')
-    project_deadline = get_input_item('Give deadline: ')
-    project_finished = get_input_item('Is project finished? (enter "yes" or "no"): ').strip().lower()
-    project = Project(project_name, project_descr)
-    project.fk_customer_id = fk_customer_id
-    project.project_date_added = project_date_added
-    project.project_deadline = project_deadline
-    project.project_finished = project_finished
-    return project
+    new_project = Project()
+    new_project.project_name = get_input_item('Give project name: ')
+    new_project.project_descr = get_input_item('Give project description: ')
+    while True: 
+        print('A project has to be assigned to a customer. Here is the list of customers: ')
+        #print the table of all customers: 
+        dbf.print_table('customers', dbf.give_table_filtered('customers'))
+        #get input for the new project (has to be an integer)
+        customer = get_input('Give the customer to assign this project to: ', 1)
+        # test if the input value is the id of an existing csutomer: 
+        list_customer_id = dbf.give_id_table('customers')
+        if customer in list_customer_id:
+            new_project.fk_project_id = new_project
+            break 
+        else: 
+            print("-" * 35)
+            print("-" * 35)
+            print('invalid choice! pleace choose one of the existing customers!')
+    while True:
+        input_project_date_added = get_input_item('Give date when project was added in format: YYYY/MM/DD: ')
+        try: 
+            new_project.project_date_added = new_project.str_to_date(input_project_date_added)
+            break
+        except: 
+            print('date format was incorrect! please use YYYY/MM/DD')
+    while True:
+        input_project_deadline = get_input_item('Give the deadline in format: YYYY/MM/DD: ')
+        try: 
+            new_project.project_deadline = new_project.str_to_date(input_project_deadline)
+            break
+        except: 
+            print('date format was incorrect! please use YYYY/MM/DD')
+    new_project.project_finished = get_input_item('Is project finished? (enter "yes" or "no"): ').strip().lower()
+    print("Project was created successfully!")
+    return new_project
 
 
 def add_project():
