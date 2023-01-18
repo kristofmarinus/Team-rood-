@@ -144,14 +144,12 @@ def menu_user():
         if choice == C_ACTION_RETURN:
             loop = False
             do_menu()
-<<<<<<< Updated upstream
         if choice == C_ACTION_USER_ALL_TASK:
             users.all_tasks_user()
             menu_header_user()
         if choice == C_ACTION_CHANGE_PRINT_OPTIONS_USER:
             dbf.do_menu_toggle('users')
-=======
->>>>>>> Stashed changes
+
 
 
 
