@@ -19,25 +19,30 @@ C_ACTION_MAKE_USER = 1
 C_ACTION_SHOW_USER = 2
 C_ACTION_ADJUST_USER = 3
 C_ACTION_DELETE_USER = 4
+C_ACTION_CHANGE_PRINT_OPTIONS_USER = 5
+C_ACTION_USER_ALL_TASK = 6
 
 # actions tasks:
 C_ACTION_MAKE_TASK = 1
 C_ACTION_SHOW_TASKS = 2
 C_ACTION_ADJUST_TASK = 3
 C_ACTION_DELETE_TASK = 4
-C_ACTION_CHANGE_PRINT_OPTIONS = 5
+C_ACTION_CHANGE_PRINT_OPTIONS_TASK = 5
+C_ACTION_ALL_TASK_USER = 6
 
 # actions projects:
 C_ACTION_MAKE_PROJECT = 1
 C_ACTION_SHOW_PROJECTS = 2
 C_ACTION_ADJUST_PROJECT = 3
 C_ACTION_DELETE_PROJECT = 4
+C_ACTION_CHANGE_PRINT_OPTIONS_PROJECT = 5
 
 # actions customers:
 C_ACTION_MAKE_CUSTOMER = 1
 C_ACTION_SHOW_CUSTOMERS = 2
 C_ACTION_ADJUST_CUSTOMER = 3
 C_ACTION_DELETE_CUSTOMER = 4
+C_ACTION_CHANGE_PRINT_OPTIONS_CUSTOMER = 5
 
 C_ACTION_RETURN = 0
 
@@ -103,6 +108,7 @@ def menu_header_user():
     print(f'{C_ACTION_ADJUST_USER}. ADJUST/UPDATE users')
     print("-" * 35)
     print(f'{C_ACTION_DELETE_USER}. Delete users')
+    print(f'{C_ACTION_USER_ALL_TASK}. Show all tasks for a user')
     print("-" * 35)
     print(f'{C_ACTION_RETURN}. Return to main menu')
     print("-" * 35)
@@ -134,6 +140,8 @@ def menu_user():
         if choice == C_ACTION_RETURN:
             loop = False
             do_menu()
+        if choice == C_ACTION_USER_ALL_TASK:
+            users.all_tasks_user()
 
 
 
@@ -147,7 +155,8 @@ def menu_header_task()->int:
     print(f'{C_ACTION_SHOW_TASKS}. Show tasks')
     print(f'{C_ACTION_ADJUST_TASK}. Change task')
     print(f'{C_ACTION_DELETE_TASK}. Delete task')
-    print(f'{C_ACTION_CHANGE_PRINT_OPTIONS}. Change display options for tables/records')
+    print(f'{C_ACTION_ALL_TASK_USER}. Delete task')
+    print(f'{C_ACTION_CHANGE_PRINT_OPTIONS_TASK}. Change display options for tables/records')
     print("-" * 35)
     print("-" * 35)
     try:
@@ -170,12 +179,14 @@ def do_menu_task():
         if choice == C_ACTION_RETURN:
             loop = False
             do_menu()
-        if choice == C_ACTION_CHANGE_PRINT_OPTIONS:
+        if choice == C_ACTION_CHANGE_PRINT_OPTIONS_TASK:
             dbf.do_menu_toggle('tasks')
         if choice == C_ACTION_ADJUST_TASK:
             task.change_task()
         if choice == C_ACTION_DELETE_TASK:
             task.delete_task()
+        if choice == C_ACTION_ALL_TASK_USER:
+            users.all_tasks_user()
 
 
 

@@ -385,7 +385,7 @@ def change_task():
     print("the task you want to change: ")
     #print the entire record (so all columns, not the "filtered" list)
     dbf.print_record("tasks", dbf.give_record("tasks", task.id), [], False, False)
-    # we loop through all the parameters and ask if the user wants to change them: 
+    # we go over all the parameters and ask if the user wants to change them: 
     # (task ID, task date_added and task date_changed can not be changed manualy by user)d
     #change description
     while True: 

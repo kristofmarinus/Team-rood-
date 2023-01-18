@@ -551,6 +551,23 @@ def give_table_filtered(tablename:str)->list:
     return table_filtered
     
 
+def filter_result(tablename:str, record:list):
+    
+    #note: this function is almost identical to give_table_filtered
+    table_unfiltered = record
+    #get the filter list (True of False value for every column in the table)
+    filter = filter_list(tablename)
+    #initialize empty table: 
+    table_filtered = []
+    #loop through the table, and then loop through every record, and only add the columns with "True" value in filter to record_rilted for every record
+    for record in table_unfiltered:
+        list_record = list(record)
+        record_filtered = []
+        for index in range(len(list_record)):
+            if filter[index]:
+                record_filtered.append(list_record[index])
+        table_filtered.append(record_filtered)
+    return table_filtered
 
 
 

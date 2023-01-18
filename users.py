@@ -1,5 +1,8 @@
 import databaseconnection as db
+import database_functions as dbf
 from inputs import get_input_item
+import sqlite3
+from get_input import get_input
 
 class User():
     __id = ""
@@ -121,6 +124,21 @@ class User():
                 print(f'fout: {e}')
         show_users_2(project_id)
 
+
+        
+    def print_tasks(self):
+        try:
+            # Write a query and execute it with cursor
+            # Fetch and output resul
+            query = f'select * from tasks where fk_user_id = "{self.id}";'
+            #query = 'select * from users ;'
+            count = db.cursor.execute(query)
+            result = db.cursor.fetchall()
+            filtered_result = dbf.filter_result('tasks', result)
+            dbf.print_table('tasks', filtered_result)
+        except sqlite3.Error as error:
+            print('Error occured - ', error)
+        
 
 
 def create_user() -> User:
@@ -337,9 +355,44 @@ def adjust_user_run():
         extra(user_id,more)
 
 
+def select_user()->User:
+    #print table with all the users: 
+    print("SELECT A USER:")
+    print("These are all the users: ")
+    dbf.print_table("users", dbf.give_table_filtered("users"))
+    #get user input: 
+    while True: 
+        user_choice = get_input('give the ID of the user you choose: ', 1)
+        #test if user input is in the list of tasks: 
+        list_task_id = dbf.give_id_table('users')
+        if user_choice in list_task_id:
+            chosen_user = User()
+            #get property values from database (there is no function yet for this..)
+            #we are only setting the id for now... 
+            chosen_user.id = user_choice
+            return chosen_user
+        else: 
+            print("invalid id... please choose an id from the list! ")
+
+
+
+def all_tasks_user():
+    #first select a user: 
+    user_selected = select_user()
+    #print all tasks for this user: 
+    print("-" * 35)
+    print("-" * 35)
+    print("All tasks for the user you selected: ")
+    print("")
+    user_selected.print_tasks()
+
+
+
 
 def main():
-    pass
+    user_test = select_user()
+
+    user_test.print_tasks()
 
 
 if __name__ == '__main__':
