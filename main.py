@@ -108,6 +108,7 @@ def menu_header_user():
     print(f'{C_ACTION_ADJUST_USER}. ADJUST/UPDATE users')
     print("-" * 35)
     print(f'{C_ACTION_DELETE_USER}. Delete users')
+    print(f'{C_ACTION_CHANGE_PRINT_OPTIONS_USER}. Change display options for tables/records')
     print(f'{C_ACTION_USER_ALL_TASK}. Show all tasks for a user')
     print("-" * 35)
     print(f'{C_ACTION_RETURN}. Return to main menu')
@@ -129,7 +130,7 @@ def menu_user():
             users.add_user()
             menu_header_user()
         if choice == C_ACTION_SHOW_USER:
-            users.User.show_users()
+            dbf.print_table("users", dbf.give_table_filtered("users"))
             menu_header_user()
         if choice == C_ACTION_DELETE_USER:
             users.delete_user()
@@ -142,6 +143,10 @@ def menu_user():
             do_menu()
         if choice == C_ACTION_USER_ALL_TASK:
             users.all_tasks_user()
+            menu_header_user()
+        if choice == C_ACTION_CHANGE_PRINT_OPTIONS_USER:
+            dbf.do_menu_toggle('users')
+
 
 
 
@@ -200,6 +205,7 @@ def menu_header_projects():
     print(f'{C_ACTION_ADJUST_PROJECT}. ADJUST/UPDATE project')
     print("-" * 35)
     print(f'{C_ACTION_DELETE_PROJECT}. Delete project')
+    print(f'{C_ACTION_CHANGE_PRINT_OPTIONS_PROJECT}. Change display options for tables/records')
     print("-" * 35)
     print(f'{C_ACTION_RETURN}. Return to main menu')
     print("-" * 35)
@@ -220,7 +226,7 @@ def menu_project():
             projects.add_project()
             menu_header_projects()
         if choice == C_ACTION_SHOW_PROJECTS:
-            projects.Project.show_projects()
+            dbf.print_table("projects", dbf.give_table_filtered("projects"))
             menu_header_projects()
         if choice == C_ACTION_DELETE_PROJECT:
             projects.delete_project()
@@ -231,6 +237,10 @@ def menu_project():
         if choice == C_ACTION_RETURN:
             loop = False
             do_menu()
+        if choice == C_ACTION_CHANGE_PRINT_OPTIONS_PROJECT:            
+            dbf.do_menu_toggle('projects')
+            menu_header_projects()
+
 
 def menu_header_customers():
     print("-" * 35)
@@ -242,6 +252,7 @@ def menu_header_customers():
     print(f'{C_ACTION_ADJUST_CUSTOMER}. ADJUST/UPDATE customer')
     print("-" * 35)
     print(f'{C_ACTION_DELETE_CUSTOMER}. Delete customer')
+    print(f'{C_ACTION_CHANGE_PRINT_OPTIONS_CUSTOMER}. Change display options for tables/records')
     print("-" * 35)
     print(f'{C_ACTION_RETURN}. Return to main menu')
     print("-" * 35)
@@ -262,7 +273,7 @@ def menu_customer():
             customers.add_customer()
             menu_header_customers()
         if choice == C_ACTION_SHOW_CUSTOMERS:
-            customers.Customer.show_customers()
+            dbf.print_table("tasks", dbf.give_table_filtered("customers"))
             menu_header_customers()
         if choice == C_ACTION_DELETE_CUSTOMER:
             customers.delete_customer()
@@ -273,6 +284,10 @@ def menu_customer():
         if choice == C_ACTION_RETURN:
             loop = False
             do_menu()
+        if choice == C_ACTION_CHANGE_PRINT_OPTIONS_CUSTOMER:
+            dbf.do_menu_toggle('customers')
+            menu_header_customers()
+
 
 
 

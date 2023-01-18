@@ -134,8 +134,11 @@ class User():
             #query = 'select * from users ;'
             count = db.cursor.execute(query)
             result = db.cursor.fetchall()
-            filtered_result = dbf.filter_result('tasks', result)
-            dbf.print_table('tasks', filtered_result)
+            if len(result) != 0: 
+                filtered_result = dbf.filter_result('tasks', result)
+                dbf.print_table('tasks', filtered_result)
+            else:
+                print("user has no tasks assigned! ")
         except sqlite3.Error as error:
             print('Error occured - ', error)
         

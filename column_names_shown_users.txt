@@ -1,6 +1,6 @@
 id
 fullname
-firstname
-lastname
+first_name
+last_name
 email
 website

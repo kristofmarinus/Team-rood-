@@ -2,6 +2,5 @@ id
 project_name
 project_descr
 fk_customer_id
-project_date_added
 project_deadline
 project_finished
