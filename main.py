@@ -53,6 +53,9 @@ C_ACTIONS = [C_ACTION_SHOW_USER,
 
 
 def menu_header() -> int:
+    """
+    Prints the main menu
+    """
 
     print("-" * 35)
     print("-" * 35)
@@ -77,6 +80,10 @@ def menu_header() -> int:
 
 
 def do_menu():
+    """
+    Checks choice of user.
+    Jumps to the correct sub menu
+    """
 
     loop = True
     while loop:
@@ -99,6 +106,9 @@ def do_menu():
 
 
 def menu_header_user():
+    """
+    Main menu for users
+    """
     print("-" * 35)
     print("-" * 35)
     print("USER MENU")
@@ -118,7 +128,7 @@ def menu_header_user():
 
 def menu_user():
     """
-    this is
+    Checks choice, does action user choise
 
     """
     menu_header_user()
@@ -155,6 +165,9 @@ def menu_user():
 
 
 def menu_header_task()->int:
+    """
+    Main menu for tasks
+    """
     print("-" * 35)
     print("-" * 35)
     print("TASK MENU")
@@ -178,6 +191,10 @@ def menu_header_task()->int:
 
 
 def do_menu_task():
+    """
+    Checks choice, does action user choise
+
+    """
     loop = True
     while loop:
         choice = menu_header_task()
@@ -200,6 +217,9 @@ def do_menu_task():
 
 
 def menu_header_projects():
+    """
+    Main menu for projects
+    """
     print("-" * 35)
     print("-" * 35)
     print("PROJECT MENU")
@@ -218,7 +238,7 @@ def menu_header_projects():
 
 def menu_project():
     """
-    this is
+    Checks choice, does action user choise
 
     """
     menu_header_projects()
@@ -247,6 +267,9 @@ def menu_project():
 
 
 def menu_header_customers():
+    """
+    Main menu for customers
+    """
     print("-" * 35)
     print("-" * 35)
     print("CUSTOMER MENU")
@@ -265,7 +288,7 @@ def menu_header_customers():
 
 def menu_customer():
     """
-    this is
+    Checks choice, does action user choise
 
     """
     menu_header_customers()
