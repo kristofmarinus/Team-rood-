@@ -30,9 +30,11 @@ def get_int(text):
     """
     n = 0
     while n == 0:
-        inp = input(f'{text}')
+        inp = input(f'{text}').strip()
         if inp.isdigit():
             n += 1
+            inp = int(inp)
             return inp
         else:
             continue
+

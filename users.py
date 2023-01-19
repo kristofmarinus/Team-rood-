@@ -1,6 +1,6 @@
 import databaseconnection as db
 import database_functions as dbf
-from inputs import get_input_item
+from inputs import get_input_item,get_int
 import sqlite3
 from get_input import get_input
 
@@ -282,9 +282,13 @@ def adjust_column(user_id):
 
     # Ask for the column to be adjusted
     column = input("Enter the column name to be adjusted: ")
-    while column not in column_names:
-        print("Invalid column name. Please try again.")
-        column = input("Enter the column name to be adjusted: ")
+    while column not in column_names or column == 'fullname':
+        if column == 'fullname':
+            print("You cannot adjust fullname, to adjust it u need to change firstname or lastname")
+            column = input("Enter the column name to be adjusted: ")
+        else:
+            print("Invalid column name. Please try again.")
+            column = input("Enter the column name to be adjusted: ")
 
     # Update the column in the database
     value = input("Enter the new value: ")
@@ -296,10 +300,6 @@ def adjust_column(user_id):
     print("User details updated successfully!")
 
 
-
-
-
-#choose which want toch adjust row or column
 def adjust_type_func(user_id):
     """
             # Do you want to adjust whole row or specific column
@@ -309,23 +309,29 @@ def adjust_type_func(user_id):
                                "\n1.whole row "
                                "\n2.specific column "
                                "\nChoose: ")
-    if adjust_type != 1 or adjust_type !=2:
-        if adjust_type == 1:
-            print_selected_user(user_id)
-            adjust_row(user_id)
-            return adjust_type
+    if adjust_type == 1:
+        print_selected_user(user_id)
+        adjust_row(user_id)
+        return adjust_type
 
-        elif adjust_type == 2:
+    elif adjust_type ==2:
+        print('2')
+        print_selected_user(user_id)
+        adjust_column(user_id)
+        return adjust_type
 
-            print_selected_user(user_id)
-            adjust_column(user_id)
-            return adjust_type
+    else:
+        print('Choose a valid number!')
+        adjust_type_func(user_id)
 
-        else:
-            print('Choose a valid number!')
-            adjust_type_func(user_id)
 
 def more_adjustments():
+    """
+    asks the person if he wants to adjust row/column of the same user
+    or choose another user
+    or go back / exit
+    :return:
+    """
     more = get_int(
         ("Do you want to "
          "\n1. adjust row/column of the same user  "
@@ -393,9 +399,9 @@ def all_tasks_user():
 
 
 def main():
-    user_test = select_user()
-
-    user_test.print_tasks()
+    #user_test = select_user()
+    pass
+    #user_test.print_tasks()
 
 
 if __name__ == '__main__':

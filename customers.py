@@ -80,9 +80,6 @@ class Customer():
     def show_customers(project_id=-1):
         """show all customers
         """
-        """voorstel: 
-        dbf.print_table("customers", dbf.give_table_filtered('customers'))
-        """
         project_id = get_input_item("Enter 1 to show all customers",
                                     1)
         #Add a feature to show customers from X-ids to Y-ids.
@@ -155,7 +152,7 @@ def adjust_customer(db):
 
         def print_all():
             """
-            #Print all the info of the table customers
+            Print all the info of the table customers
             :return: prints all the customers
             """
             sql_cmd = 'select * from customers;'
@@ -204,8 +201,7 @@ def adjust_customer(db):
 #function to print_selected_user
 def print_selected_customer(customer_id):
     """
-    voorstel: volledige functie vervangen door: 
-    dbf.print_record("customers",dbf.give_record_filtered("customers", customer_id), dbf.get_justify_values("customers" ,dbf.give_record_filtered("customers", customer_id)))
+    Print customer you selected by customer_id
     """
     # print the selected CUSTOMER
     db.cursor.execute("SELECT * FROM customers WHERE id=?", (customer_id,))
@@ -225,7 +221,10 @@ def print_selected_customer(customer_id):
 
 
 def adjust_row(customer_id):
-    # Ask for all the details
+    """
+    Enter the customer_id of the customer that needs to be adjusted.
+    Enter the new details for this customer
+    """
     customer_name = cs50.get_string("Enter the customer name: ")
     customer_website = input("Enter the customer website: ")
     customer_phone = input("Enter the customer phone number: ")
@@ -240,6 +239,10 @@ def adjust_row(customer_id):
 
 
 def adjust_column(customer_id):
+    """
+    Adjust 1 column of a customer by entering the column name
+    Then enter the new detail
+    """
     # Query the database to get a list of column names in the CUSTOMERS table
     c = db.cursor
     c.execute("PRAGMA table_info(customers)")
@@ -261,7 +264,7 @@ def adjust_column(customer_id):
 #choose which want toch adjust row or column
 def adjust_type_func(customer_id):
     """
-            # Do you want to adjust whole row or specific column
+    Chose if you want to adjust 1 column or the whole row.
     :return: row or column
     """
     adjust_type = cs50.get_int("Choose what do you want to adjust:"
@@ -285,6 +288,10 @@ def adjust_type_func(customer_id):
             adjust_type_func(customer_id)
 
 def more_adjustments():
+    """
+    Asks if they want to make more adjustements
+    :return: row or column
+    """
     more = cs50.get_int(
         ("Do you want to "
          "\n1. adjust row/column of the same customer  "
@@ -295,8 +302,10 @@ def more_adjustments():
 
 
 def extra(customer_id,more):
+    """
+    Ask if user wants to adjust more columns or choose another row/customer
+    """
     while True:
-        # Ask if user wants to adjust more column or choose another row/customer
         if more == 1:  # adjust same customer
             adjust_type_func(customer_id)
             more_adjustments()
@@ -309,9 +318,11 @@ def extra(customer_id,more):
 
 
 def adjust_customer_run():
-    # Connect to the database
-        # Adjust customer details
-        customer_id = adjust_customer(db)
-        adjust_type_func(customer_id)
-        more = more_adjustments()
-        extra(customer_id,more)
+    """
+    Connect to the database
+    Adjust project details
+    """
+    customer_id = adjust_customer(db)
+    adjust_type_func(customer_id)
+    more = more_adjustments()
+    extra(customer_id,more)
