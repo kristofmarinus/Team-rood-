@@ -188,7 +188,7 @@ class Project(BaseClass):
 def create_project() -> Project:
     """
 
-    Asks for information
+    Asks for information to create a project
 
     Returns:
         Project: the project
@@ -201,8 +201,8 @@ def create_project() -> Project:
         #print the table of all customers: 
         dbf.print_table('customers', dbf.give_table_filtered('customers'))
         #get input for the new project (has to be an integer)
-        customer = get_int('Give the customer to assign this project to:')
-        # test if the input value is the id of an existing csutomer:
+        customer = get_int('Give the customer id to assign this project to:')
+        # test if the input value is the id of an existing customer:
         list_customer_id = dbf.give_id_table('customers')
         if customer in list_customer_id:
             new_project.fk_customer_id = customer
@@ -210,7 +210,7 @@ def create_project() -> Project:
         else: 
             print("-" * 35)
             print("-" * 35)
-            print('invalid choice! pleace choose one of the existing customers!')
+            print('invalid choice! please choose one of the existing customers!')
     while True:
         input_project_date_added = get_input_item('Give date when project was added in format: YYYY/MM/DD: ')
         try: 
@@ -257,54 +257,57 @@ def delete_project():
 
 
 def adjust_project(db):
+    """
+    Handles user chaning project
+    """
 
-        def print_all():
-            """
-            Print all the info of the table projects
-            return: prints all the projects
-            """
-            sql_cmd = 'select * from projects;'
-            db.cursor.execute(sql_cmd)
-            rows = db.cursor.fetchall()
+    def print_all():
+        """
+        Print all the info of the table projects
+        return: prints all the projects
+        """
+        sql_cmd = 'select * from projects;'
+        db.cursor.execute(sql_cmd)
+        rows = db.cursor.fetchall()
+        print('-' * 50)
+        print('project ID - project_name - project_descr - fk_customer_id - project_date_added - project_deadline - project_finished')
+        print('-' * 50)
+        if len(rows) > 0:
+            for row in rows:
+                print('| ', end='')
+                for i in row:
+                    print(i, end=' | ')
+                print('')
             print('-' * 50)
-            print('project ID - project_name - project_descr - fk_customer_id - project_date_added - project_deadline - project_finished')
-            print('-' * 50)
-            if len(rows) > 0:
-                for row in rows:
-                    print('| ', end='')
-                    for i in row:
-                        print(i, end=' | ')
-                    print('')
-                print('-' * 50)
-            else:
-                print('geen gegevens gevonden')
-        print_all()
+        else:
+            print('geen gegevens gevonden')
+    print_all()
 
-        # Choose id of the project
-        project_id = cs50.get_int("Enter the id of the project: ")
+    # Choose id of the project
+    project_id = cs50.get_int("Enter the id of the project: ")
 
-        #cheking if the id of the project exists
-        def id_exists(project_id):
-            db.cursor.execute("SELECT * FROM projects WHERE id=?", (project_id,))
-            result = db.cursor.fetchone()
-            if result:
-                return True
-            else:
-                return False
+    #cheking if the id of the project exists
+    def id_exists(project_id):
+        db.cursor.execute("SELECT * FROM projects WHERE id=?", (project_id,))
+        result = db.cursor.fetchone()
+        if result:
+            return True
+        else:
+            return False
 
-        # IF given id NOT exists restart the main function -> adjust_project()
+    # IF given id NOT exists restart the main function -> adjust_project()
 
 
-        #if it is ok then print the project details
-        if id_exists(project_id):
-            return project_id
-
-        if id_exists(project_id) is False:
-            print("ID does not exist in the table")
-            print("Choose another one")
-            adjust_project(db)
-
+    #if it is ok then print the project details
+    if id_exists(project_id):
         return project_id
+
+    if id_exists(project_id) is False:
+        print("ID does not exist in the table")
+        print("Choose another one")
+        adjust_project(db)
+
+    return project_id
 
 #function to print_selected_project
 def print_selected_project(project_id):
@@ -330,21 +333,53 @@ def print_selected_project(project_id):
 
 def adjust_row(project_id):
     """
-    Enter the project_id of the project that needs to be adjusted.
-    Enter the new details for this project
-    """
-    project_name = cs50.get_string("Enter the project name: ")
-    project_descr = cs50.get_string("Enter the project description: ")
-    fk_customer_id = input("Enter the customer id: ")
-    project_date_added = input("Enter the date when project was added: ")
-    project_deadline = input("Enter the deadline: ")
-    project_finished = input("Enter if project is finished: ")
+    Asks for information to create a project
 
-    # Update the row in the database
-    c = db.cursor
-    c.execute("UPDATE projects SET project_name=?, project_descr=?, fk_customer_id=?, project_date_added=?, project_deadline=?, project_finished=? WHERE id=?",
-             (project_name, project_descr, fk_customer_id, project_date_added, project_deadline, project_finished, project_id))
-    db.sqliteConnection.commit()
+    Returns:
+        Project: the project
+    """
+    adjust_project = Project()
+    adjust_project.project_name = get_input_item('Give project name: ')
+    adjust_project.project_descr = get_input_item('Give project description: ')
+    while True: 
+        print('A project has to be assigned to a customer. Here is the list of customers: ')
+        #print the table of all customers: 
+        dbf.print_table('customers', dbf.give_table_filtered('customers'))
+        #get input for the new project (has to be an integer)
+        customer = get_int('Give the customer id to assign this project to:')
+        # test if the input value is the id of an existing customer:
+        list_customer_id = dbf.give_id_table('customers')
+        if customer in list_customer_id:
+            adjust_project.fk_customer_id = customer
+            break 
+        else: 
+            print("-" * 35)
+            print("-" * 35)
+            print('invalid choice! please choose one of the existing customers!')
+    while True:
+        input_project_date_added = get_input_item('Give date when project was added in format: YYYY/MM/DD: ')
+        try: 
+            adjust_project.project_date_added = adjust_project.str_to_date(input_project_date_added)
+            break
+        except: 
+            print('date format was incorrect! please use YYYY/MM/DD')
+    while True:
+        input_project_deadline = get_input_item('Give the deadline in format: YYYY/MM/DD: ')
+        try: 
+            adjust_project.project_deadline = adjust_project.str_to_date(input_project_deadline)
+            break
+        except: 
+            print('date format was incorrect! please use YYYY/MM/DD')
+    adjust_project.project_finished = get_input_item('Is project finished? (enter "yes" or "no"): ').strip().lower()
+    print("Project was updated successfully!")
+    return adjust_project
+
+def update_project():
+    """
+    update a project to the projects list
+    """
+    project = create_project()
+    project.write_project()
 
 
 def adjust_column(project_id):
