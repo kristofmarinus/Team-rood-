@@ -229,12 +229,12 @@ class Task(BaseClass):
             print(f'error in module from_db : {e}')
 
     @staticmethod
-    def delete_tasks_by_project_id(project_id):
+    def delete_tasks_by_project_id(inp: int):
         try:
-            sql_cmd = c.execute("DELETE FROM tasks WHERE project_id={project_id}", (project_id))
+            sql_cmd = f"DELETE FROM tasks WHERE fk_project_id={inp};"
             db.cursor.execute(sql_cmd)
             db.sqliteConnection.commit()
-            print(f'Deleted all tasks associated with project id: {project_id}')
+            print(f'Deleted all tasks associated with project id: {inp}')
         except Exception as e:
             print(f'fout def.delete_tasks_by_project_id: {e}')
         

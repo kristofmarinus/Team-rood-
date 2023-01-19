@@ -120,13 +120,13 @@ class Project(BaseClass):
             raise TypeError('project_finished has to be a string, or a type that can be converted to a string')
 
     @staticmethod
-    def delete_projects_by_customer_id(customer_id):
+    def delete_projects_by_customer_id(inp: int):
         """Delete all projects associated with a customer"""
         try:
-            sql_cmd = c.execute("DELETE FROM projects WHERE customer_id={customer_id}", (customer_id))
+            sql_cmd = f"DELETE FROM projects WHERE fk_customer_id={inp};"
             db.cursor.execute(sql_cmd)
             db.sqliteConnection.commit()
-            print(f'Deleted all projects associated with customer id: {customer_id}')
+            print(f'Deleted all projects associated with customer id: {inp}')
         except Exception as e:
             print(f'fout def.delete_projects_by_customer_id: {e}')
 
@@ -205,7 +205,7 @@ def create_project() -> Project:
         # test if the input value is the id of an existing csutomer:
         list_customer_id = dbf.give_id_table('customers')
         if customer in list_customer_id:
-            new_project.fk_customer_id = new_project
+            new_project.fk_customer_id = customer
             break 
         else: 
             print("-" * 35)

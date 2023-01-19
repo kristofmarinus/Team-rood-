@@ -73,8 +73,6 @@ class Customer():
         """
         try:
             sql_cmd = f'delete from customers where id = {inp};'
-
-            
             db.cursor.execute(sql_cmd)
             db.sqliteConnection.commit()
             print('customer deleted')
