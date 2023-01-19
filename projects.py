@@ -149,9 +149,6 @@ class Project(BaseClass):
     def show_projects():
         """show all projects
         """
-        """voorstel: 
-        dbf.print_table("projects", dbf.give_table_filtered('projects'))
-        """
         project_id = get_input_item("Enter 1 to show all projects",
                                     1)
         #Add a feature to show projects from X-ids to Y-ids.
@@ -301,8 +298,7 @@ def adjust_project(db):
 #function to print_selected_project
 def print_selected_project(project_id):
     """
-    voorstel: volledige functie vervangen door: 
-    dbf.print_record("projects",dbf.give_record_filtered("projects", project_id), dbf.get_justify_values("projects" ,dbf.give_record_filtered("projects", project_id)))
+    Print the project you selected by project_id
     """
     # print the selected PROJECT
     db.cursor.execute("SELECT * FROM projects WHERE id=?", (project_id,))
@@ -322,7 +318,10 @@ def print_selected_project(project_id):
 
 
 def adjust_row(project_id):
-    # Ask for all the details
+    """
+    Enter the project_id of the project that needs to be adjusted.
+    Enter the new details for this project
+    """
     project_name = cs50.get_string("Enter the project name: ")
     project_descr = cs50.get_string("Enter the project description: ")
     fk_customer_id = input("Enter the customer id: ")
@@ -338,6 +337,10 @@ def adjust_row(project_id):
 
 
 def adjust_column(project_id):
+    """
+    Adjust 1 column of a project by entering the column name
+    Then enter the new detail
+    """
     # Query the database to get a list of column names in the PROJECTS table
     c = db.cursor
     c.execute("PRAGMA table_info(projects)")
@@ -362,7 +365,7 @@ def adjust_column(project_id):
 #choose which want toch adjust row or column
 def adjust_type_func(project_id):
     """
-        # Do you want to adjust whole row or specific column
+    Chose if you want to adjust 1 column or the whole row.
     :return: row or column
     """
     adjust_type = cs50.get_int("Choose what do you want to adjust:"
@@ -386,6 +389,10 @@ def adjust_type_func(project_id):
             adjust_type_func(project_id)
 
 def more_adjustments():
+    """
+    Asks if they want to make more adjustements
+    :return: row or column
+    """
     more = cs50.get_int(
         ("Do you want to "
         "\n1. adjust row/column of the same project  "
@@ -396,8 +403,10 @@ def more_adjustments():
 
 
 def extra(project_id,more):
+    """
+    Ask if user wants to adjust more columns or choose another row/project
+    """
     while True:
-        # Ask if user wants to adjust more column or choose another row/project
         if more == 1:  # adjust same project
             adjust_type_func(project_id)
             more_adjustments()
@@ -410,10 +419,12 @@ def extra(project_id,more):
 
 
 def adjust_project_run():
-    # Connect to the database
-    # Adjust project details
-        project_id = adjust_project(db)
-        adjust_type_func(project_id)
-        more = more_adjustments()
-        extra(project_id,more)
+    """
+    Connect to the database
+    Adjust project details
+    """
+    project_id = adjust_project(db)
+    adjust_type_func(project_id)
+    more = more_adjustments()
+    extra(project_id,more)
 
