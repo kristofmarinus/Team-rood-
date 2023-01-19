@@ -237,7 +237,6 @@ def adjust_user(db):
             print("ID does not exist in the table")
             print("Choose another one")
             adjust_user(db)
-
         return user_id
 
 #function to print_selected_user
@@ -295,7 +294,7 @@ def adjust_column(user_id):
     c.execute("UPDATE users SET {}=? WHERE id=?".format(column), (value, user_id))
     db.sqliteConnection.commit()
     # autoupdate the full name
-    c.execute("UPDATE users SET fullname=firstname || ' ' || lastname WHERE id=?", (user_id,))
+    c.execute("UPDATE users SET fullname=first_name || ' ' || last_name WHERE id=?", (user_id,))
     db.sqliteConnection.commit()
     print("User details updated successfully!")
 

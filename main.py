@@ -315,7 +315,7 @@ def menu_customer():
             customers.add_customer()
             menu_header_customers()
         if choice == C_ACTION_SHOW_CUSTOMERS:
-            dbf.print_table("tasks", dbf.give_table_filtered("customers"))
+            dbf.print_table("customers", dbf.give_table_filtered("customers"))
             menu_header_customers()
         if choice == C_ACTION_DELETE_CUSTOMER:
             customers.delete_customer()
