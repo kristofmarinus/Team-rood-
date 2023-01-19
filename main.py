@@ -160,8 +160,8 @@ def menu_header_task()->int:
     print(f'{C_ACTION_SHOW_TASKS}. Show tasks')
     print(f'{C_ACTION_ADJUST_TASK}. Change task')
     print(f'{C_ACTION_DELETE_TASK}. Delete task')
-    print(f'{C_ACTION_ALL_TASK_USER}. Delete task')
     print(f'{C_ACTION_CHANGE_PRINT_OPTIONS_TASK}. Change display options for tables/records')
+    print(f'{C_ACTION_ALL_TASK_USER}. Show all tasks for a specific user')
     print("-" * 35)
     print("-" * 35)
     try:
