@@ -4,3 +4,4 @@ project_descr
 fk_customer_id
 project_deadline
 project_finished
+project_date_added
