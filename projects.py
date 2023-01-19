@@ -194,7 +194,7 @@ def create_project() -> Project:
         # test if the input value is the id of an existing csutomer: 
         list_customer_id = dbf.give_id_table('customers')
         if customer in list_customer_id:
-            new_project.fk_project_id = new_project
+            new_project.fk_customer_id = new_project
             break 
         else: 
             print("-" * 35)
