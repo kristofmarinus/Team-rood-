@@ -95,14 +95,15 @@ def print_table(tablename:str, result:list):
     """
     if len(result) == 0:
         print('lege tabel!')
-    list_justify = get_justify_values(tablename, result)
-    number_colums = len(result[0])
-   #print columnames:   
-    print(give_string_columnames(tablename, list_justify))    
-    #iterate over the table and print every record:  
-    number_records = len(result)
-    for record_index in range(number_records):  
-        print_record(tablename, [result[record_index]], list_justify, True) 
+    if len(result) != 0:
+        list_justify = get_justify_values(tablename, result)
+        number_colums = len(result[0])
+        #print columnames:   
+        print(give_string_columnames(tablename, list_justify))    
+        #iterate over the table and print every record:  
+        number_records = len(result)
+        for record_index in range(number_records):  
+            print_record(tablename, [result[record_index]], list_justify, True) 
 
       
   
@@ -133,7 +134,6 @@ def give_string_columnames(tablename:str, list_justify:list, filtered = True)->s
         return string_columnames + '| '
     except sqlite3.Error as error:
         print('Error occured - ', error)
-
 
 
 def give_field(tablename:str, id:int, fieldname:str):
@@ -256,10 +256,6 @@ def get_justify_values(tablename:str, table:list, filtered = True)->list:
     return list_justify_values
         
 
-def give_index_values(table:list)->list:
-    pass #returns a list with the index values
-
-
 def get_column_names(tablename:str)->list:
     """generates a list of the column names of a given table
 
@@ -275,6 +271,7 @@ def get_column_names(tablename:str)->list:
     for element in description:
         list_names.append(str(element[0]))
     return list_names
+
 
 def newline_removed(list_input:list)->list:
     """removes the "new line" character "\n" from every element in a list
@@ -552,12 +549,21 @@ def give_table_filtered(tablename:str)->list:
     
 
 def filter_result(tablename:str, record:list):
-    
+    """filters a result (so deletes all columns that are not shown, and keeps the columns that are shown)
+
+    Args:
+        tablename (str): string of tablename, for example: "tasks"
+        record (list): result of a query. List where every record is a tupple
+
+    Returns:
+        _list_: list of tupples (represents a table). Every tupple is the record. Only the values of columnns that are shown are in these tupples
+    """
     #note: this function is almost identical to give_table_filtered
     table_unfiltered = record
     #get the filter list (True of False value for every column in the table)
     filter = filter_list(tablename)
     #initialize empty table: 
+    
     table_filtered = []
     #loop through the table, and then loop through every record, and only add the columns with "True" value in filter to record_rilted for every record
     for record in table_unfiltered:
@@ -568,6 +574,7 @@ def filter_result(tablename:str, record:list):
                 record_filtered.append(list_record[index])
         table_filtered.append(record_filtered)
     return table_filtered
+    
 
 
 

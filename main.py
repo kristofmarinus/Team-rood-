@@ -29,6 +29,8 @@ C_ACTION_ADJUST_TASK = 3
 C_ACTION_DELETE_TASK = 4
 C_ACTION_CHANGE_PRINT_OPTIONS_TASK = 5
 C_ACTION_ALL_TASK_USER = 6
+C_ACTION_ALL_UNFINISHED_TASKS = 7
+C_ACTION_ALL_FINISHED_TASKS = 8
 
 # actions projects:
 C_ACTION_MAKE_PROJECT = 1
@@ -36,6 +38,7 @@ C_ACTION_SHOW_PROJECTS = 2
 C_ACTION_ADJUST_PROJECT = 3
 C_ACTION_DELETE_PROJECT = 4
 C_ACTION_CHANGE_PRINT_OPTIONS_PROJECT = 5
+C_ACTION_PROCECT_BY_CUSTOMER = 6
 
 # actions customers:
 C_ACTION_MAKE_CUSTOMER = 1
@@ -43,6 +46,7 @@ C_ACTION_SHOW_CUSTOMERS = 2
 C_ACTION_ADJUST_CUSTOMER = 3
 C_ACTION_DELETE_CUSTOMER = 4
 C_ACTION_CHANGE_PRINT_OPTIONS_CUSTOMER = 5
+C_ACTION_CUSTOMER_ALL_PROJECTS = 6
 
 C_ACTION_RETURN = 0
 
@@ -179,6 +183,8 @@ def menu_header_task()->int:
     print(f'{C_ACTION_DELETE_TASK}. Delete task')
     print(f'{C_ACTION_CHANGE_PRINT_OPTIONS_TASK}. Change display options for tables/records')
     print(f'{C_ACTION_ALL_TASK_USER}. Show all tasks for a specific user')
+    print(f'{C_ACTION_ALL_UNFINISHED_TASKS}. Show all unfinished tasks')
+    print(f'{C_ACTION_ALL_FINISHED_TASKS}. Show all finished tasks')
     print("-" * 35)
     print("-" * 35)
     try:
@@ -213,6 +219,10 @@ def do_menu_task():
             task.delete_task()
         if choice == C_ACTION_ALL_TASK_USER:
             users.all_tasks_user()
+        if choice == C_ACTION_ALL_FINISHED_TASKS:
+            task.print_all_finished_tasks()
+        if choice == C_ACTION_ALL_UNFINISHED_TASKS:
+            task.print_all_unfinished_tasks()
 
 
 
@@ -230,6 +240,7 @@ def menu_header_projects():
     print("-" * 35)
     print(f'{C_ACTION_DELETE_PROJECT}. Delete project')
     print(f'{C_ACTION_CHANGE_PRINT_OPTIONS_PROJECT}. Change display options for tables/records')
+    print(f'{C_ACTION_PROCECT_BY_CUSTOMER}. Show all projects for a customer')
     print("-" * 35)
     print(f'{C_ACTION_RETURN}. Return to main menu')
     print("-" * 35)
@@ -264,6 +275,9 @@ def menu_project():
         if choice == C_ACTION_CHANGE_PRINT_OPTIONS_PROJECT:            
             dbf.do_menu_toggle('projects')
             menu_header_projects()
+        if choice == C_ACTION_PROCECT_BY_CUSTOMER:
+            customers.all_project_customer()
+            menu_header_projects()
 
 
 def menu_header_customers():
@@ -280,6 +294,7 @@ def menu_header_customers():
     print("-" * 35)
     print(f'{C_ACTION_DELETE_CUSTOMER}. Delete customer')
     print(f'{C_ACTION_CHANGE_PRINT_OPTIONS_CUSTOMER}. Change display options for tables/records')
+    print(f'{C_ACTION_CUSTOMER_ALL_PROJECTS}. Show all projects for a customer')
     print("-" * 35)
     print(f'{C_ACTION_RETURN}. Return to main menu')
     print("-" * 35)
@@ -313,6 +328,9 @@ def menu_customer():
             do_menu()
         if choice == C_ACTION_CHANGE_PRINT_OPTIONS_CUSTOMER:
             dbf.do_menu_toggle('customers')
+            menu_header_customers()
+        if choice == C_ACTION_CUSTOMER_ALL_PROJECTS:
+            customers.all_project_customer()
             menu_header_customers()
 
 

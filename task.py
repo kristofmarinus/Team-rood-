@@ -561,11 +561,47 @@ def delete_task():
                 break
         else: 
             print("invalid input... please ty again... ")
-        
+
+def print_all_unfinished_tasks():
+    """handles printing all unfinished (open) tasks. a task is unfinished until (date) task_finished_on is filled in in database
+    """
+    print('THESE ARE ALL OPEN TASKS: ')  
+    #get query result: 
+    try: 
+        query = 'select * from tasks where task_finished_on is Null;'
+        count = db.cursor.execute(query)
+        result = db.cursor.fetchall()
+    except sqlite3.Error as error:
+        print('Error occured - ', error)
+    if len(result) == 0:
+        print('lege tabel!')
+    #filter result (only the visible columns remain)
+    result_filtered = dbf.filter_result("tasks", result)
+    #print table: 
+    dbf.print_table("tasks", result_filtered)
+
+
+def print_all_finished_tasks():
+    """handles printing all finished (open) tasks. a task is unfinished until (date) task_finished_on is filled in in database
+    """
+    print('THESE ARE ALL FINISHED TASKS: ')  
+    #get query result: 
+    try: 
+        query = 'select * from tasks where task_finished_on is not Null;'
+        count = db.cursor.execute(query)
+        result = db.cursor.fetchall()
+    except sqlite3.Error as error:
+        print('Error occured - ', error)
+    if len(result) == 0:
+        print('lege tabel!')
+    #filter result (only the visible columns remain)
+    result_filtered = dbf.filter_result("tasks", result)
+    #print table: 
+    dbf.print_table("tasks", result_filtered)
                     
 
 def main():
-    pass
+    print_all_unfinished_tasks()
 
 
 if __name__ == '__main__':

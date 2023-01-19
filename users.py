@@ -386,6 +386,8 @@ def select_user()->User:
 
 
 def all_tasks_user():
+    """handles printing all the tasks for a user that is selected through input
+    """
     #first select a user: 
     user_selected = select_user()
     #print all tasks for this user: 

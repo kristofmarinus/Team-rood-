@@ -3,16 +3,22 @@ from inputs import get_input_item
 from src import cs50
 import database_functions as dbf
 import sqlite3
+from get_input import get_input
 
 class Customer():
+    __id = ""
     __customer_name = ""
     __customer_website = "none"
     __customer_phone = ""
     __vat_number = "none"
 
-    def __init__(self, customer_name: str, customer_phone : str):
-        self.__customer_name = customer_name
-        self.__customer_phone = customer_phone
+    @property
+    def id(self):
+        return self.__id
+
+    @id.setter
+    def id(self, value):
+        self.__id = value
 
     @property
     def customer_name(self):
@@ -105,6 +111,26 @@ class Customer():
         show_customers_2(project_id)
 
 
+    def print_projects(self):
+        """handles printing all the projects for a customer
+        """
+        try:
+            # Write a query and execute it with cursor
+            # Fetch and output resul
+            query = f'select * from projects where fk_customer_id = "{self.id}";'
+            #query = 'select * from users ;'
+            count = db.cursor.execute(query)
+            result = db.cursor.fetchall()
+            if len(result) != 0: 
+                filtered_result = dbf.filter_result('projects', result)
+                dbf.print_table('projects', filtered_result)
+            else:
+                print("customer has no projects assigned! ")
+        except sqlite3.Error as error:
+            print('Error occured - ', error)
+        
+
+
 def create_customer() -> Customer:
     """
 
@@ -117,8 +143,10 @@ def create_customer() -> Customer:
     customer_website = get_input_item('Give customer website')
     customer_phone = get_input_item('Give customer phone number')
     vat_number = get_input_item('Give vat number')
-    customer = Customer(customer_name, customer_phone)
-    customer.website = customer_website
+    customer = Customer()
+    customer.customer_name = customer_name
+    customer.customer_phone = customer_phone
+    customer.customer_website = customer_website
     customer.vat_number = vat_number
     return customer
 
@@ -326,3 +354,44 @@ def adjust_customer_run():
     adjust_type_func(customer_id)
     more = more_adjustments()
     extra(customer_id,more)
+
+
+def select_customer()->Customer:
+    #print table with all the customers: 
+    print("SELECT A CUSTOMER:")
+    print("These are all the customers: ")
+    dbf.print_table("customers", dbf.give_table_filtered("customers"))
+    #get user input: 
+    while True: 
+        user_choice = get_input('give the ID of the customer you choose: ', 1)
+        #test if user input is in the list of tasks: 
+        list_task_id = dbf.give_id_table('customers')
+        if user_choice in list_task_id:
+            chosen_customer = Customer()
+            #get property values from database (there is no function yet for this..)
+            #we are only setting the id for now... 
+            chosen_customer.id = user_choice
+            return chosen_customer
+        else: 
+            print("invalid id... please choose an id from the list! ")
+
+
+def all_project_customer():
+    """handles printing all the projects for a customerthat is selected through input
+    """
+    #first select a user: 
+    customer_selected = select_customer()
+    #print all tasks for this user: 
+    print("-" * 35)
+    print("-" * 35)
+    print("All projects for the customer you selected: ")
+    print("")
+    customer_selected.print_projects()
+
+
+
+def main():
+    all_project_customer()
+
+if __name__ == '__main__':
+    main()
