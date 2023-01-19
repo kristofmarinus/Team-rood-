@@ -228,7 +228,16 @@ class Task(BaseClass):
         except Exception as e:
             print(f'error in module from_db : {e}')
 
-
+    @staticmethod
+    def delete_tasks_by_project_id(project_id):
+        try:
+            sql_cmd = c.execute("DELETE FROM tasks WHERE project_id={project_id}", (project_id))
+            db.cursor.execute(sql_cmd)
+            db.sqliteConnection.commit()
+            print(f'Deleted all tasks associated with project id: {project_id}')
+        except Exception as e:
+            print(f'fout def.delete_tasks_by_project_id: {e}')
+        
     def to_db(self):
         """writes a task to DB. (SQL update for existing, changed, task and SQL insert for a new task)
         """
@@ -303,7 +312,7 @@ def create_task():
             print("-" * 35)
             print('invalid choice! pleace choose one of the existing projects!')
     #(optional): get user assigned to task
-    while True: 
+    while True:
         print('Do you want to assign a user to this project? if not: type NO, if yes: type YES')
         input_dialog = get_input('Yes/No : ').lower().strip()
         if input_dialog == "no":
@@ -313,14 +322,14 @@ def create_task():
             print('you chose to assing a user. This is a list of all the users: ')
             dbf.print_table("users", dbf.give_table_filtered("users"))
             #loop to get the input, and check if input is an ID that is in the table "users"
-            while True: 
+            while True:
                 print()
                 input_id = get_input('give id of the user you want to assing this task to: ', 1)
                 list_user_id = dbf.give_id_table("users")
                 if input_id in list_user_id:
                     new_task.fk_user_id = input_id
                     break
-                else: 
+                else:
                     print("-" * 35)
                     print("-" * 35)
                     print('invalid choice! pleace choose one of the existing users!')
