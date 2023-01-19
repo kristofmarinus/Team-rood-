@@ -1,5 +1,5 @@
 import databaseconnection as db
-from inputs import get_input_item
+from inputs import get_input_item,get_int
 from src import cs50
 import datetime
 import database_functions as dbf
@@ -119,6 +119,17 @@ class Project(BaseClass):
         except: 
             raise TypeError('project_finished has to be a string, or a type that can be converted to a string')
 
+    @staticmethod
+    def delete_projects_by_customer_id(inp: int):
+        """Delete all projects associated with a customer"""
+        try:
+            sql_cmd = f"DELETE FROM projects WHERE fk_customer_id={inp};"
+            db.cursor.execute(sql_cmd)
+            db.sqliteConnection.commit()
+            print(f'Deleted all projects associated with customer id: {inp}')
+        except Exception as e:
+            print(f'fout def.delete_projects_by_customer_id: {e}')
+
 
     def write_project(self):
         """writes project to the database
@@ -190,11 +201,11 @@ def create_project() -> Project:
         #print the table of all customers: 
         dbf.print_table('customers', dbf.give_table_filtered('customers'))
         #get input for the new project (has to be an integer)
-        customer = get_input('Give the customer to assign this project to: ', 1)
-        # test if the input value is the id of an existing csutomer: 
+        customer = get_int('Give the customer to assign this project to:')
+        # test if the input value is the id of an existing csutomer:
         list_customer_id = dbf.give_id_table('customers')
         if customer in list_customer_id:
-            new_project.fk_customer_id = new_project
+            new_project.fk_customer_id = customer
             break 
         else: 
             print("-" * 35)

@@ -4,6 +4,9 @@ from src import cs50
 import database_functions as dbf
 import sqlite3
 from get_input import get_input
+from projects import Project
+from task import Task
+
 
 class Customer():
     __id = ""
@@ -170,6 +173,8 @@ def delete_customer():
     inp = get_input_item("Select customer id to delete", 1)
     check = get_input_item(f'WARNING: Delete is irreparable --- enter "y" --- if you wish still to delete the customer{inp}')
     if check.strip().lower() == "y":
+        Project.delete_projects_by_customer_id(inp)
+        Task.delete_tasks_by_project_id(inp)
         Customer.delete_customer(inp)
         print(f'CUSTOMER with id:{inp} was DELETED')
     else:
