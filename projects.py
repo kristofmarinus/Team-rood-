@@ -372,15 +372,14 @@ def adjust_row(project_id):
             print('date format was incorrect! please use YYYY/MM/DD')
     adjust_project.project_finished = get_input_item('Is project finished? (enter "yes" or "no"): ').strip().lower()
     print("Project was updated successfully!")
+    
+
+    #Update the row in the database
+    c = db.cursor
+    c.execute("UPDATE projects SET project_name=?, project_descr=?, fk_customer_id=?, project_date_added=?, project_deadline=?, project_finished=? WHERE id=?",
+             (adjust_project.project_name, adjust_project.project_descr, adjust_project.fk_customer_id, adjust_project.project_date_added, adjust_project.project_deadline, adjust_project.project_finished, project_id))
+    db.sqliteConnection.commit()
     return adjust_project
-
-def update_project():
-    """
-    update a project to the projects list
-    """
-    project = create_project()
-    project.write_project()
-
 
 def adjust_column(project_id):
     """
